@@ -98,6 +98,7 @@ void server::TCPMessageRecSend()
 		}
 		else
 		{
+			printf("Clients are connected\n");
 		}
 	}
 
