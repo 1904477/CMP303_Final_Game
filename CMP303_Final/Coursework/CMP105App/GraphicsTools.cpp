@@ -25,12 +25,12 @@ void GraphicsTools::render(sf::RenderWindow* hwnd)
 	}
 }
 
-void GraphicsTools::coinGenerator()
+void GraphicsTools::coinGenerator(sf::Vector2f coinPos_[10])
 {
 	for (int i = 0; i < 10; i++)
 	{
 		Coin coin;
-		coin.setPosition(40 + i * 150, 40);
+		coin.setPosition(coinPos_->x,coinPos_->y);
 		coin.Update();
 		coins.push_back(coin);
 		

@@ -10,7 +10,7 @@ public:
 
 	void setup(sf::RenderWindow* hwnd);
 	void render(sf::RenderWindow* hwnd);
-	void coinGenerator();
+	void coinGenerator(sf::Vector2f coinPos_[10]);
 	void renderCoin(sf::RenderWindow* hwnd);
 
 

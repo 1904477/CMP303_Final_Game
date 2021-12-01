@@ -67,16 +67,11 @@ void Menu::Init()
 void Menu::handleInput(sf::Event* Ev)
 {
 	sf::Vector2u w_size = window->getSize();		//Messages are being rendered
-
 	if (input->isKeyDown(sf::Keyboard::Escape))	//IF EXIT IS PRESSED,THE SCREEN CLOSES
 	{
 		window->close();
 	}
-	if (input->isKeyDown(sf::Keyboard::Space)) //IF SPACE IS PRESSED IN MENU, CONTROLS STARTS
-	{
-		gameState->setCurrentState(State::LEVEL);
-		input->setKeyUp(sf::Keyboard::Space);
-	}
+	
 
 	if (Ev->type == sf::Event::TextEntered)		//Text is being entered
 	{
@@ -119,7 +114,6 @@ void Menu::handleInput(sf::Event* Ev)
 	{
 		if (Ev->key.code == sf::Keyboard::Return)		//Send message on enter
 		{
-			std::cout << "Name is" << nameEnter;
 			nameEnterText.setFillColor(sf::Color::Green);
 			sf::Packet name_sent;
 			int type = 1;
@@ -127,7 +121,7 @@ void Menu::handleInput(sf::Event* Ev)
 			name_sent << nameEnter;
 			players += nameEnter;
 			connect_attempt = true;
-
+			IPorName == "";
 		}
 		else if (Ev->key.code == sf::Keyboard::BackSpace)		//Removes last letter in the message in the chat
 		{
@@ -138,6 +132,11 @@ void Menu::handleInput(sf::Event* Ev)
 		{
 			nameEnter += ' ';
 		}
+	}
+	if (input->isKeyDown(sf::Keyboard::Space)) //IF SPACE IS PRESSED IN MENU, CONTROLS STARTS
+	{
+		gameState->setCurrentState(State::LEVEL);
+		input->setKeyUp(sf::Keyboard::Space);
 	}
 
 		IpEnterDisplay.setString(IpEnter);

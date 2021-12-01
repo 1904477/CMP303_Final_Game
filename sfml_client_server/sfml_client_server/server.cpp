@@ -10,6 +10,7 @@ void server::Init()
 	selector.add(listener);
 	UDP_socket.setBlocking(false);
 
+	
 	BindUDP();
 }
 
@@ -84,22 +85,20 @@ void server::TCPMessageRecSend()
 					}
 				}
 			}
-	}
-	for (int i = 0; i < clients.size(); i++)
-	{
-		sf::Packet packet;
-		if (clients[i]->send(packet) != sf::Socket::Done)
-		{
-			id_setter--;
-			std::cout << "ID: " << id_setter << " has disconnected. \n";
-			std::cout << id_setter << "  is now a free id.\n ";
-			clients.pop_back();
-			std::cout << "There are other : " << clients.size() << " people in the server \n";
-		}
-		else
-		{
-			printf("Clients are connected\n");
-		}
+			sf::Packet disconnection;
+		/*	if (clients[i]->send(disconnection) != sf::Socket::Done)
+			{
+				id_setter--;
+				std::cout << "ID: " << id_setter << " has disconnected. \n";
+				std::cout << id_setter << "  is now a free id.\n ";
+				clients.pop_back();
+				std::cout << "There are other : " << clients.size() << " people in the server \n";
+			}
+			else
+			{
+				std::cout << "|";
+			}*/
+
 	}
 
 }
@@ -183,9 +182,7 @@ void server::receiveUDP()
 
 void server::sendUDP(sf::Packet receivePosVar,int ID)
 {
-	coinPos = sf::Vector2f(100, 100);
-	float coin_posX = coinPos.x;
-	float coin_posY = coinPos.y;
+
 	int type = 7;
 		sf::Packet move;
 		//int id_temp;
@@ -200,7 +197,8 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 		sendToClients << ID;
 		sendToClients << posX;
 		sendToClients << posY;
-
+	/*	sendToClients << coinPos.x;
+		sendToClients << coinPos.y;*/
 
 		for (int i = 0; i < clientsUDP.size(); i++)
 		{
@@ -222,7 +220,6 @@ void server::propsPos()
 {
 
 
-	sf::Packet coinPos;
 	
 	
 }
@@ -243,21 +240,19 @@ void server::startingPositions()
 		Enemy_Starting_posX = 10;
 		Enemy_Starting_posY = 20;
 	}
-
-
+	
 }
 
 void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
 {
 	sf::Packet Id_And_Pos_Setter;
+	int type = 1;
+	Id_And_Pos_Setter << type;
 	Id_And_Pos_Setter << id_setter;
 	Id_And_Pos_Setter << Starting_posX;
 	Id_And_Pos_Setter << Starting_posY;
 	Id_And_Pos_Setter << Enemy_Starting_posX;
 	Id_And_Pos_Setter << Enemy_Starting_posY;
-	Id_And_Pos_Setter << coinPos.x;
-	Id_And_Pos_Setter << coinPos.y;
-
 	if (sock->send(Id_And_Pos_Setter) != sf::Socket::Done)
 	{
 		std::cout << "Error sending message. \n";
@@ -267,6 +262,31 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
 		std::cout << name_ << " is id: " << id_setter << "\n";
 		id_setter++;
 	}
+	int type1 = 2;
+	coinPosPacket << type1;
+	if (genDone == false)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			float x = static_cast <float> (rand() % 1000);
+			float y = static_cast <float> (rand() % 1000);
+			coinPos[i].x = x;
+			coinPos[i].y = y;
+			coinPosPacket << coinPos[i].x;
+			coinPosPacket << coinPos[i].y;
+			std::cout << coinPos[i].x << "  -  " << coinPos[i].y << std::endl;
+		}
+		genDone = true;
+	}
+	if (sock->send(coinPosPacket) != sf::Socket::Done)
+	{
+		std::cout << "Error sending message. \n";
+	}
+	else
+	{
+		
+	}
+	
 }
 
 void server::BindUDP()

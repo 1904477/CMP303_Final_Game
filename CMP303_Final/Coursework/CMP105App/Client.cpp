@@ -117,26 +117,47 @@ void Client::Name_Sending_TCP(sf::TcpSocket* sock, std::string &name)
 
 void Client::ID_And_Positions_Getter(sf::TcpSocket* sock)
 {
+	int type;
 	sf::Packet Id_Getter;
+	sf::Packet CoinposGetter;
+
 	if (sock->receive(Id_Getter) != sf::Socket::Done)
 	{
 		std::cout << "Error getting ID\n";
 	}
 	else
 	{
-		Id_Getter >> id_getter;
-		std::cout << "Your id is: " << id_getter<<std::endl;
-		Id_Getter >> Player_Starting_posX;
-		Id_Getter >> Player_Starting_posY;
-		std::cout << "Your starting position is " << Player_Starting_posX <<"  :  " << Player_Starting_posY << std::endl;
-		Id_Getter >> Enemy_Starting_posX;
-		Id_Getter >> Enemy_Starting_posY;
-		std::cout << "Enemy starting position is " << Enemy_Starting_posX << "  :  " << Enemy_Starting_posY << std::endl;
-		Id_Getter >> coinPos.x;
-		Id_Getter >> coinPos.y;
-		std::cout << "Coin starting position is " << coinPos.x << "  :  " << coinPos.y << std::endl;
-		Tools.coinGenerator();
-		
+		Id_Getter >> type;
+		if (type == 1)
+		{
+			Id_Getter >> id_getter;
+			std::cout << "Your id is: " << id_getter << std::endl;
+			Id_Getter >> Player_Starting_posX;
+			Id_Getter >> Player_Starting_posY;
+			std::cout << "Your starting position is " << Player_Starting_posX << "  :  " << Player_Starting_posY << std::endl;
+			Id_Getter >> Enemy_Starting_posX;
+			Id_Getter >> Enemy_Starting_posY;
+			std::cout << "Enemy starting position is " << Enemy_Starting_posX << "  :  " << Enemy_Starting_posY << std::endl;
+		}	
+	}
+	if (sock->receive(CoinposGetter) != sf::Socket::Done)
+	{
+		std::cout << "Error getting ID\n";
+	}
+	else
+	{
+		CoinposGetter >> type;
+		std::cout << type;
+		if (type == 2)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				CoinposGetter >> coinPos[i].x;
+				CoinposGetter >> coinPos[i].y;
+				std::cout << coinPos[i].x << "  -  " << coinPos[i].y << std::endl;
+				Tools.coinGenerator(&coinPos[i]);
+			}
+		}
 	}
 }
 
@@ -233,9 +254,10 @@ void Client::UDPReceive(Player* p, Player* enemy)
 			updated_pos >> enemyID;
 			if (id_getter != enemyID)
 			{
-				updated_pos >> enemy_new_x >> enemy_new_y;
-				std::cout << enemyID << "Is at position positions: \n" << enemy_new_x << "-" << enemy_new_y << "\n";
-				enemy->setPosition(enemy_new_x, enemy_new_y);
+				updated_pos >> enemy_received.x >> enemy_received.y;
+
+			//	std::cout << enemyID << "Is at position positions: \n" << enemy_new_x << "-" << enemy_new_y << "\n";
+			
 				render_enemy = true;
 
 			}
@@ -246,6 +268,8 @@ void Client::UDPReceive(Player* p, Player* enemy)
 			updated_pos >> coinNum;
 			Tools.coins[coinNum].setPicked(true);
 		}
+
+
 	}
 
 }
@@ -273,11 +297,26 @@ bool Client::renderEnemy()
 	return render_enemy;
 }
 
+void Client::interpolateEnemyPos(Player* enemy,float dt)
+{
+	sf::Vector2f next_pos=enemy_received;
+
+	sf::Vector2f pos = enemy->getPosition();
+
+	sf::Vector2f dir = next_pos - pos;
+	
+	pos += dir * 40.0f * dt;
+
+	enemy->setPosition(pos);
+}
+
 
 void Client::Update(Input* input,sf::Event* Ev, sf::RenderWindow* window, Player* p, Player* enemy,float dt)
 {
 	UDP_sendPosition(p,input,dt);
-	UDPReceive(p,enemy);
+	
+	interpolateEnemyPos(enemy,dt);
+	UDPReceive(p, enemy);
 	CheckCollision(p);
 	disconnect(p,input, window);
 	TCPReceive();
@@ -325,7 +364,7 @@ void Client::UDP_sendPosition(Player* p, Input* input,float dt)
 	{
 		p->move(0, speed *dt);
 	}
-	if (time1.asSeconds() >= 0.01)
+	if (time1.asSeconds() >= 0.5)
 	{
 		temp <<id_getter<< posX << posY;
 		if (udp_socket.send(temp, server_address, udp_port) != sf::Socket::Done)

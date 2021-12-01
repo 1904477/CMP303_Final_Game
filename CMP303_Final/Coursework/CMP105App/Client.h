@@ -30,6 +30,8 @@ public:
 	void Setup(Player* p, Player* enemy);
 	bool getConnectedStatus();
 	bool renderEnemy();
+	void interpolateEnemyPos(Player* enemy, float dt);
+
 
 	sf::Text drawText;
 protected:
@@ -52,14 +54,13 @@ protected:
 	bool open_chat;		//Bool for knowing if the chat is open
 	bool chat_empty_on_open;	//Bool for properly switch vars
 	bool is_chat_open;
-	float enemy_new_x=0, enemy_new_y=0;
-
-
-	sf::Vector2f coinPos;
-
+	sf::Vector2f enemy_received = sf::Vector2f(0, 0);
+	float enemy_interpolated_x;
+	float enemy_interpolated_y;
 	float Player_Starting_posX;
 	float Player_Starting_posY;
 	float Enemy_Starting_posX;
 	float Enemy_Starting_posY;
+	sf::Vector2f coinPos[10];
 };
 

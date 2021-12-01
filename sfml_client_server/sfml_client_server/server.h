@@ -43,7 +43,9 @@ protected:
 	float Starting_posY;
 	float Enemy_Starting_posX;
 	float Enemy_Starting_posY;
-	
-	sf::Vector2f coinPos;
+
+	sf::Packet coinPosPacket;
+	bool genDone=false;
+	sf::Vector2f coinPos[10];
 };
 
