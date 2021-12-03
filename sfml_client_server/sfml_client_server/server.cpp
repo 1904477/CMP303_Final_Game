@@ -46,15 +46,20 @@ void server::TCPCommunicationHandler()
 		{
 			clients.push_back(socket);
 			selector.add(*socket);
-			int type=1;
 			sf::Packet name_packet;
 			std::string name;
 			if (socket->receive(name_packet) == sf::Socket::Done)
 			{
-				startingPositions();
-				name_packet >> name;
-				std::cout << name << " has connected to the chat room. " << std::endl;
-				IdAndPositionSetter(socket, name);
+				int type =0;
+				name_packet >> type;
+				if (type == 1)
+				{
+					name_packet >> name;
+					std::cout << name << " has connected to the chat room. " << std::endl;
+				}
+					number_of_players++;
+					startingPositions();
+					IdAndPositionSetter(socket, name);
 			}
 
 			socket->setBlocking(false);
@@ -85,20 +90,13 @@ void server::TCPMessageRecSend()
 					}
 				}
 			}
-			sf::Packet disconnection;
-		/*	if (clients[i]->send(disconnection) != sf::Socket::Done)
+			sf::Packet numOfPlayers;
+			int type = 11;
+			numOfPlayers << type<< number_of_players;
+			if (clients[i]->send(numOfPlayers) == sf::Socket::Done)
 			{
-				id_setter--;
-				std::cout << "ID: " << id_setter << " has disconnected. \n";
-				std::cout << id_setter << "  is now a free id.\n ";
-				clients.pop_back();
-				std::cout << "There are other : " << clients.size() << " people in the server \n";
+				std::cout << "num of players sent correctly.\n";
 			}
-			else
-			{
-				std::cout << "|";
-			}*/
-
 	}
 
 }
@@ -106,7 +104,6 @@ void server::TCPMessageRecSend()
 void server::UDP()
 {
 	receiveUDP();
-	propsPos();
 }
 
 void server::receiveUDP()
@@ -215,15 +212,6 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 		}
 			
 }
-
-void server::propsPos()
-{
-
-
-	
-	
-}
-
 void server::startingPositions()
 {
 	if (clients.size() == 1)
@@ -245,46 +233,57 @@ void server::startingPositions()
 
 void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
 {
-	sf::Packet Id_And_Pos_Setter;
-	int type = 1;
-	Id_And_Pos_Setter << type;
-	Id_And_Pos_Setter << id_setter;
-	Id_And_Pos_Setter << Starting_posX;
-	Id_And_Pos_Setter << Starting_posY;
-	Id_And_Pos_Setter << Enemy_Starting_posX;
-	Id_And_Pos_Setter << Enemy_Starting_posY;
-	if (sock->send(Id_And_Pos_Setter) != sf::Socket::Done)
+	sf::Packet setupAsked;
+	int type;
+	
+	if (sock->receive(setupAsked) == sf::Socket::Done)
 	{
-		std::cout << "Error sending message. \n";
-	}
-	else
-	{
-		std::cout << name_ << " is id: " << id_setter << "\n";
-		id_setter++;
-	}
-	int type1 = 2;
-	coinPosPacket << type1;
-	if (genDone == false)
-	{
-		for (int i = 0; i < 10; i++)
+		setupAsked >> type;
+		if (type == 19)
 		{
-			float x = static_cast <float> (rand() % 1000);
-			float y = static_cast <float> (rand() % 1000);
-			coinPos[i].x = x;
-			coinPos[i].y = y;
-			coinPosPacket << coinPos[i].x;
-			coinPosPacket << coinPos[i].y;
-			std::cout << coinPos[i].x << "  -  " << coinPos[i].y << std::endl;
+			sf::Packet Id_And_Pos_Setter;
+			int type = 1;
+			Id_And_Pos_Setter << type;
+			Id_And_Pos_Setter << id_setter;
+			Id_And_Pos_Setter << Starting_posX;
+			Id_And_Pos_Setter << Starting_posY;
+			Id_And_Pos_Setter << Enemy_Starting_posX;
+			Id_And_Pos_Setter << Enemy_Starting_posY;
+			if (sock->send(Id_And_Pos_Setter) != sf::Socket::Done)
+			{
+				std::cout << "Error sending message. \n";
+			}
+			else
+			{
+				std::cout << name_ << " is id: " << id_setter << "\n";
+				id_setter++;
+			}
+			int type1 = 2;
+			coinPosPacket << type1;
+			if (genDone == false)
+			{
+				for (int i = 0; i < 10; i++)
+				{
+					float x = static_cast <float> (rand() % 1000);
+					float y = static_cast <float> (rand() % 1000);
+					coinPos[i].x = x;
+					coinPos[i].y = y;
+					coinPosPacket << coinPos[i].x;
+					coinPosPacket << coinPos[i].y;
+					std::cout << coinPos[i].x << "  -  " << coinPos[i].y << std::endl;
+				}
+				genDone = true;
+			}
+			if (sock->send(coinPosPacket) != sf::Socket::Done)
+			{
+				std::cout << "Error sending message. \n";
+			}
+			else
+			{
+
+			}
+
 		}
-		genDone = true;
-	}
-	if (sock->send(coinPosPacket) != sf::Socket::Done)
-	{
-		std::cout << "Error sending message. \n";
-	}
-	else
-	{
-		
 	}
 	
 }

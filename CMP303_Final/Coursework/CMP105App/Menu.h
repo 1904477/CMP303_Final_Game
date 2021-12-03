@@ -8,7 +8,7 @@ class Menu : public GameObject
 {
 public:
 
-	Menu(sf::RenderWindow* hwnd, GameState* gs, Input* in);
+	Menu(sf::RenderWindow* hwnd, GameState* gs, Input* in, sf::TcpSocket *sock);
 	~Menu();
 	void Init();
 	void handleInput(sf::Event* Ev);
@@ -17,6 +17,13 @@ public:
 	void beginDraw();
 	void endDraw();
 	void reset();
+	void nameEnterFunction(sf::Event* Event_);
+	void IpEnterFunction(sf::Event* Event_);
+	void recNumOfPlayers();
+
+
+
+	void Name_Sending_TCP();
 
 	sf::IpAddress IpTransmissionToLevel();
 	std::string NameTransmissionToLevel();
@@ -40,9 +47,11 @@ public:
 	Input* input;
 	GameState* gameState;
 	sf::IpAddress ipAdress_server;
-
+	sf::TcpSocket* Tcp;
 
 	GraphicsTools Graphics;
 	std::string IPorName;
-	
+
+
+	int number_of_players = 0;
 };

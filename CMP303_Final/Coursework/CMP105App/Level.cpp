@@ -1,11 +1,12 @@
 #include "Level.h"
 
-Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs)
+Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs,sf::TcpSocket *sock)
 {
 	window = hwnd;
 	input = in;
 	gameState = gs;
 	connected_succesfully = false;
+	Tcp = sock;
 }
 
 Level::~Level()
@@ -17,12 +18,12 @@ void Level::Init(Menu*menu_)
 	port = 53000;
 	menu=menu_;
 	name = menu->NameTransmissionToLevel();
-	
+
 	//std::cout << "Enter the ip address you wanna connect to: \n";
 	IP_ADDRESS = menu->IpTransmissionToLevel();
 	std::cout << IP_ADDRESS << std::endl;
-	client_ = std::make_unique<Client>(IP_ADDRESS, port, player_, enemy_, name);
-
+	client_ = std::make_unique<Client>(IP_ADDRESS, port, player_, enemy_, name,Tcp);
+	
 	connected_succesfully = client_->getConnectedStatus();
 	if (connected_succesfully == true)
 	{

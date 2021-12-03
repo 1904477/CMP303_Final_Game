@@ -12,7 +12,7 @@
 class Client
 {
 public:
-	Client(sf::IpAddress& ip, unsigned short& port, Player& p,Player& enemy, std::string& name);
+	Client(sf::IpAddress& ip, unsigned short& port, Player& p,Player& enemy, std::string& name,sf::TcpSocket*sock);
 	~Client();
 	void HandleInput(sf::Event* Ev,Input* input, sf::RenderWindow* window, Player* p);
 	void Update(Input* input,sf::Event * Ev, sf::RenderWindow* window, Player* p, Player* enemy, float dt);
@@ -22,7 +22,7 @@ public:
 	void UDP_sendPosition(Player* p, Input* input, float dt);
 	void TCPReceive();
 	void Name_Sending_TCP(sf::TcpSocket* sock, std::string& name);
-	void ID_And_Positions_Getter(sf::TcpSocket* sock);
+	void ID_And_Positions_Getter();
 	void CheckCollision(Player* p);
 	void textSetup(sf::RenderWindow* window);
 	void disconnect(Player* p, Input* input, sf::RenderWindow* window);
@@ -38,7 +38,7 @@ protected:
 	std::string name;
 	std::string userText;
 	sf::Font font;
-	sf::TcpSocket socket;
+	sf::TcpSocket* socket;
 	sf::UdpSocket udp_socket;
 	sf::Clock clock;
 	std::vector<sf::Text>chat;

@@ -17,7 +17,6 @@ public:
 	void BindUDP();
 	void receiveUDP();
 	void sendUDP(sf::Packet receivePosVar,int ID);
-	void propsPos();
 	void startingPositions();
 	void IdAndPositionSetter(sf::TcpSocket* sock,std::string name_);
 	bool connected;
@@ -43,6 +42,7 @@ protected:
 	float Starting_posY;
 	float Enemy_Starting_posX;
 	float Enemy_Starting_posY;
+	int number_of_players = 0;
 
 	sf::Packet coinPosPacket;
 	bool genDone=false;

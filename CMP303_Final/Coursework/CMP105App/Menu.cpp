@@ -3,12 +3,12 @@
 #include"Framework\GameObject.h"
 #include<iostream>
 
-Menu::Menu(sf::RenderWindow* hwnd, GameState* gs, Input* in)
+Menu::Menu(sf::RenderWindow* hwnd, GameState* gs, Input* in, sf::TcpSocket* sock)
 {
 	gameState = gs;
 	window = hwnd;
 	input = in;
-	
+	Tcp = sock;
 }
 
 Menu::~Menu()
@@ -20,7 +20,7 @@ void Menu::Init()
 	IpEnter = "";
 	nameEnter = "";
 	Graphics.setup(window);
-
+	font.loadFromFile("font/arial.ttf");
 	IPorName = "IP";
 	if (!font.loadFromFile("font/arial.ttf")) //SETS THE GAME NAME IN THE MENU SCREEN
 	{
@@ -75,14 +75,14 @@ void Menu::handleInput(sf::Event* Ev)
 
 	if (Ev->type == sf::Event::TextEntered)		//Text is being entered
 	{
-		if (IPorName == "IP")
+		if (IPorName == "IP")				//IP text selected and entered
 		{
 			if (32 < Ev->text.unicode && Ev->text.unicode < 128)
 			{
 				IpEnter += (char)Ev->text.unicode;
 			}
 		}
-		else if (IPorName == "Name")
+		else if (IPorName == "Name")	//name text selected and entered
 		{
 			if (32 < Ev->text.unicode && Ev->text.unicode < 128)
 			{
@@ -92,60 +92,30 @@ void Menu::handleInput(sf::Event* Ev)
 	}
 	if (Ev->type == sf::Event::KeyPressed && IPorName == "IP")			//If a key is pressed
 	{
-		if (Ev->key.code == sf::Keyboard::Return)		//Send message on enter
-		{
-			ipAdress_server = sf::IpAddress(IpEnter);
-			std::cout << "Ip address is " << IpEnter;
-			IpEnterDisplay.setFillColor(sf::Color::Green);
-			IPorName = "Name";
-		}
-		else if (Ev->key.code == sf::Keyboard::BackSpace)		//Removes last letter in the message in the chat
-		{
-			if (IpEnter.size() > 0)
-				IpEnter.pop_back();
-		}
-		else if (Ev->key.code == sf::Keyboard::Space)		//Space added
-		{
-			IpEnter += ' ';
-		}
+		IpEnterFunction(Ev);
 	}
 
 	else if (Ev->type == sf::Event::KeyPressed && IPorName == "Name")			//If a key is pressed
 	{
-		if (Ev->key.code == sf::Keyboard::Return)		//Send message on enter
-		{
-			nameEnterText.setFillColor(sf::Color::Green);
-			sf::Packet name_sent;
-			int type = 1;
-			name_sent << type;
-			name_sent << nameEnter;
-			players += nameEnter;
-			connect_attempt = true;
-			IPorName == "";
-		}
-		else if (Ev->key.code == sf::Keyboard::BackSpace)		//Removes last letter in the message in the chat
-		{
-			if (nameEnter.size() > 0)
-				nameEnter.pop_back();
-		}
-		else if (Ev->key.code == sf::Keyboard::Space)		//Space added
-		{
-			nameEnter += ' ';
-		}
+		nameEnterFunction(Ev);
 	}
 	if (input->isKeyDown(sf::Keyboard::Space)) //IF SPACE IS PRESSED IN MENU, CONTROLS STARTS
 	{
-		gameState->setCurrentState(State::LEVEL);
+		
 		input->setKeyUp(sf::Keyboard::Space);
 	}
-
-		IpEnterDisplay.setString(IpEnter);
-		nameEnterText.setString(nameEnter);
-		std::cout << nameEnter << std::endl;
+	IpEnterDisplay.setString(IpEnter);
+	nameEnterText.setString(nameEnter);
+	
 }
 
 void Menu::update(float dt)
 {
+	recNumOfPlayers();
+	//if (number_of_players == 1)
+	//{
+	//	gameState->setCurrentState(State::LEVEL);
+	//}
 }
 
 void Menu::render()
@@ -174,6 +144,106 @@ void Menu::endDraw()
 
 void Menu::reset()
 {
+}
+
+void Menu::Name_Sending_TCP()
+{
+
+	printf("Connection successful!\n\n");
+
+
+	sf::Packet name_sender;
+	int type = 1;
+	name_sender << type;
+	name_sender << nameEnter;
+	std::cout << nameEnter << std::endl;
+	if (Tcp->send(name_sender) != sf::Socket::Done)
+	{
+		std::cout << "Error setting up\n";
+	}
+
+
+}
+
+void Menu::nameEnterFunction(sf::Event* Event_)
+{
+	if (Event_->key.code == sf::Keyboard::Return)		//Send message on enter
+	{
+		nameEnterText.setFillColor(sf::Color::Green);
+		sf::Packet name_sent;
+		players += nameEnter;
+		connect_attempt = true;
+		IPorName == "";
+		std::cout << ipAdress_server;
+		
+		sf::Socket::Status Tcp_Stat = Tcp->connect(ipAdress_server, 53000);
+		if (Tcp_Stat != sf::Socket::Done)
+		{
+			printf("Client couldn't connect'\n");
+			printf("Server could be full, non existing or under maintenance\n");
+			Init();
+		}
+		else
+		{
+	
+			std::cout << "IS IT CONNECTED " << "\n";
+			Name_Sending_TCP();
+			
+		//	gameState->setCurrentState(State::LEVEL);
+			//window->setTitle(id);			//Id is sent 
+		}
+
+	}
+	else if (Event_->key.code == sf::Keyboard::BackSpace)		//Removes last letter in the message in the chat
+	{
+		if (nameEnter.size() > 0)
+			nameEnter.pop_back();
+	}
+	else if (Event_->key.code == sf::Keyboard::Space)		//Space added
+	{
+		nameEnter += ' ';
+	}
+}
+
+void Menu::IpEnterFunction(sf::Event* Event_)
+{
+	if (Event_->key.code == sf::Keyboard::Return)		//Send message on enter
+	{
+		ipAdress_server = sf::IpAddress(IpEnter);
+		std::cout << "Ip address is " << IpEnter<<"\n";
+		IpEnterDisplay.setFillColor(sf::Color::Green);
+		IPorName = "Name";
+
+
+		
+	}
+	else if (Event_->key.code == sf::Keyboard::BackSpace)		//Removes last letter in the message in the chat
+	{
+		if (IpEnter.size() > 0)
+			IpEnter.pop_back();
+	}
+	else if (Event_->key.code == sf::Keyboard::Space)		//Space added
+	{
+		IpEnter += ' ';
+	}
+}
+
+void Menu::recNumOfPlayers()
+{
+
+
+	sf::Packet numOfPlayerPack;
+	if (Tcp->receive(numOfPlayerPack) == sf::Socket::Done)		//Packet that are being received by other clients through the server
+	{
+		int num;
+		numOfPlayerPack >> num;
+		if (num == 11)
+		{
+			numOfPlayerPack >> number_of_players;
+			std::cout << "number of play: " << number_of_players << "\n";
+			
+		}
+	}
 }
 
 sf::IpAddress Menu::IpTransmissionToLevel()

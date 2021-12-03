@@ -11,7 +11,7 @@
 #include "Menu.h"
 class Level{
 public:
-	Level(sf::RenderWindow* hwnd, Input* in, GameState* gs);
+	Level(sf::RenderWindow* hwnd, Input* in, GameState* gs,sf::TcpSocket *sock);
 	~Level();
 	void handleInput(float dt);
 	void update(float dt,sf::Event*Ev);
@@ -41,6 +41,7 @@ private:
 	unsigned short port;
 	sf::IpAddress IP_ADDRESS;
 	std::string name;
+	sf::TcpSocket* Tcp;
 
 	bool enemy_rendered;
 };

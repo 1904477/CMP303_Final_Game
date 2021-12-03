@@ -1,27 +1,25 @@
 #include "Client.h"
 
-Client::Client(sf::IpAddress& ip, unsigned short& port, Player& p, Player& enemy, std::string& name_)
+Client::Client(sf::IpAddress& ip, unsigned short& port, Player& p, Player& enemy, std::string& name_, sf::TcpSocket* sock)
 {
+	socket = sock;
 	render_enemy = false;
 	//udp_port = sf::UdpSocket::AnyPort;
 	server_address = ip;
 	//socket.setBlocking(true);
-	sf::Socket::Status Tcp = socket.connect(ip, port);
-	if (Tcp != sf::Socket::Done)
-	{
-		printf("Client couldn't connect'\n");
-		printf("Server could be full, non existing or under maintenance\n");
-	}
-	else
-	{
-		
-		name = name_;
-		Name_Sending_TCP(&socket,name);
-		ID_And_Positions_Getter(&socket);
-		Setup(&p, &enemy);
-		//std::cout << "IS IT CONNECTED " << connected_ << "\n";
-		//window->setTitle(id);			//Id is sent 
-	}
+	//sf::Socket::Status Tcp = socket->connect(ip, port);
+	//if (Tcp != sf::Socket::Done)
+	//{
+	//	printf("Client couldn't connect'\n");
+	//	printf("Server could be full, non existing or under maintenance\n");
+	//}
+	//else
+	//{
+
+		//Name_Sending_TCP(socket,name);
+	ID_And_Positions_Getter();
+	Setup(&p, &enemy);
+	//std::cout << "IS IT CONNECTED " << connected_ << "\n";
 }
 
 Client::~Client()
@@ -89,7 +87,7 @@ void Client::HandleInput(sf::Event *Ev ,Input* input,sf::RenderWindow* window, P
 void Client::TCPReceive()
 {
 	sf::Packet packet;
-	socket.receive(packet);		//Packet that are being received by other clients through the server
+	socket->receive(packet);		//Packet that are being received by other clients through the server
 	std::string temptext;			//Stored in a temporary text
 	if (packet >> temptext)
 	{
@@ -100,28 +98,20 @@ void Client::TCPReceive()
 
 }
 
-void Client::Name_Sending_TCP(sf::TcpSocket* sock, std::string &name)
-{
-	font.loadFromFile("font/arial.ttf");
-	printf("Connection successful!\n\n");
-
-	sf::Packet name_sender;
-	name_sender << name;
-	std::cout << name << std::endl;
-	if (sock->send(name_sender) != sf::Socket::Done)
-	{
-		std::cout << "Error setting up\n";
-	}
-
-}
-
-void Client::ID_And_Positions_Getter(sf::TcpSocket* sock)
+void Client::ID_And_Positions_Getter()
 {
 	int type;
+	sf::Packet setupAsk;
+	setupAsk << 19;
+	if (socket->send(setupAsk) != sf::Socket::Done)
+	{
+		std::cout << "Error getting ID\n";
+	}
+
 	sf::Packet Id_Getter;
 	sf::Packet CoinposGetter;
 
-	if (sock->receive(Id_Getter) != sf::Socket::Done)
+	if (socket->receive(Id_Getter) != sf::Socket::Done)
 	{
 		std::cout << "Error getting ID\n";
 	}
@@ -140,7 +130,7 @@ void Client::ID_And_Positions_Getter(sf::TcpSocket* sock)
 			std::cout << "Enemy starting position is " << Enemy_Starting_posX << "  :  " << Enemy_Starting_posY << std::endl;
 		}	
 	}
-	if (sock->receive(CoinposGetter) != sf::Socket::Done)
+	if (socket->receive(CoinposGetter) != sf::Socket::Done)
 	{
 		std::cout << "Error getting ID\n";
 	}
@@ -169,12 +159,13 @@ void Client::CheckCollision(Player* p)
 		{
 			if (Collision::checkBoundingBox(p, &Tools.coins[i]))
 			{
+				std::cout << "coin picked and sent to server\n";
 				sf::Packet coinPicked;
 				int type = 8;
 				coinPicked << type << id_getter << i;
 				if (udp_socket.send(coinPicked, server_address, udp_port) == sf::Socket::Done)
 				{
-					std::cout << "coin picked and sent to server\n";
+					
 					Tools.coins[i].setPicked(true);
 				}
 
@@ -277,7 +268,7 @@ void Client::UDPReceive(Player* p, Player* enemy)
 void Client::Setup(Player* p, Player* enemy)
 {
 	udp_socket.setBlocking(false);
-	socket.setBlocking(false);
+	socket->setBlocking(false);
 	open_chat = false;			//Know whether chat is open
 	connected_ = true;		//Know whether client is connected
 	chat_empty_on_open = false;			//Empties chat when t is pressed and the chat opens
@@ -335,7 +326,7 @@ void Client::sendMessageTCP(Player* p)			//Sends a message, adding the ID in the
 	chat.push_back(displayText);
 	sf::Packet packet;
 	packet  << name + ": " + userText;
-	if (socket.send(packet) != sf::Socket::Done)
+	if (socket->send(packet) != sf::Socket::Done)
 	{
 		std::cout << "Error sending message. \n";
 	}
