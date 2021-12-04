@@ -19,7 +19,6 @@ public:
 	void reset();
 	void nameEnterFunction(sf::Event* Event_);
 	void IpEnterFunction(sf::Event* Event_);
-	void recNumOfPlayers();
 
 
 
@@ -51,7 +50,4 @@ public:
 
 	GraphicsTools Graphics;
 	std::string IPorName;
-
-
-	int number_of_players = 0;
 };

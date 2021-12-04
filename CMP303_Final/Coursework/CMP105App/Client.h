@@ -62,5 +62,7 @@ protected:
 	float Enemy_Starting_posX;
 	float Enemy_Starting_posY;
 	sf::Vector2f coinPos[10];
+
+	bool canMove=false;
 };
 

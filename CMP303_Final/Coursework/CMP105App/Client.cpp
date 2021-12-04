@@ -95,6 +95,22 @@ void Client::TCPReceive()
 		displayText.setFillColor(sf::Color::Blue);
 		chat.push_back(displayText);
 	}
+	
+	sf::Packet startGame;
+	if (socket->receive(startGame) != sf::Socket::Done)
+	{
+		std::cout << "failed to receive startGame\n";
+	}		
+	else
+	{
+		int type = 0;
+		startGame >> type;
+		if (type == 5)
+		{
+			canMove = true;
+			std::cout << "Game starts\n";
+		}
+	}
 
 }
 
@@ -304,8 +320,11 @@ void Client::interpolateEnemyPos(Player* enemy,float dt)
 
 void Client::Update(Input* input,sf::Event* Ev, sf::RenderWindow* window, Player* p, Player* enemy,float dt)
 {
-	UDP_sendPosition(p,input,dt);
-	
+	if (canMove == true)
+	{
+		UDP_sendPosition(p, input, dt);
+	}
+
 	interpolateEnemyPos(enemy,dt);
 	UDPReceive(p, enemy);
 	CheckCollision(p);

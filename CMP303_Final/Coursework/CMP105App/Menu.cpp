@@ -111,7 +111,6 @@ void Menu::handleInput(sf::Event* Ev)
 
 void Menu::update(float dt)
 {
-	recNumOfPlayers();
 	//if (number_of_players == 1)
 	//{
 	//	gameState->setCurrentState(State::LEVEL);
@@ -188,9 +187,7 @@ void Menu::nameEnterFunction(sf::Event* Event_)
 	
 			std::cout << "IS IT CONNECTED " << "\n";
 			Name_Sending_TCP();
-			
-		//	gameState->setCurrentState(State::LEVEL);
-			//window->setTitle(id);			//Id is sent 
+			gameState->setCurrentState(State::LEVEL);
 		}
 
 	}
@@ -225,24 +222,6 @@ void Menu::IpEnterFunction(sf::Event* Event_)
 	else if (Event_->key.code == sf::Keyboard::Space)		//Space added
 	{
 		IpEnter += ' ';
-	}
-}
-
-void Menu::recNumOfPlayers()
-{
-
-
-	sf::Packet numOfPlayerPack;
-	if (Tcp->receive(numOfPlayerPack) == sf::Socket::Done)		//Packet that are being received by other clients through the server
-	{
-		int num;
-		numOfPlayerPack >> num;
-		if (num == 11)
-		{
-			numOfPlayerPack >> number_of_players;
-			std::cout << "number of play: " << number_of_players << "\n";
-			
-		}
 	}
 }
 

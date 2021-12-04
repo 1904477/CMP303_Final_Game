@@ -57,7 +57,6 @@ void server::TCPCommunicationHandler()
 					name_packet >> name;
 					std::cout << name << " has connected to the chat room. " << std::endl;
 				}
-					number_of_players++;
 					startingPositions();
 					IdAndPositionSetter(socket, name);
 			}
@@ -90,12 +89,15 @@ void server::TCPMessageRecSend()
 					}
 				}
 			}
-			sf::Packet numOfPlayers;
-			int type = 11;
-			numOfPlayers << type<< number_of_players;
-			if (clients[i]->send(numOfPlayers) == sf::Socket::Done)
+			if (clients.size() == 2)
 			{
-				std::cout << "num of players sent correctly.\n";
+				sf::Packet startGame;
+				int type = 5;
+				startGame << type;
+				if (clients[i]->send(startGame) != sf::Socket::Done)
+				{
+					std::cout << "failed to send startGame packet\n";
+				}
 			}
 	}
 
