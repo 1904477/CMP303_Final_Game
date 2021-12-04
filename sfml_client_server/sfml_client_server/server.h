@@ -42,8 +42,9 @@ protected:
 	float Starting_posY;
 	float Enemy_Starting_posX;
 	float Enemy_Starting_posY;
-	int number_of_players = 0;
 
+	sf::Clock clock;
+	sf::Time time1;
 	sf::Packet coinPosPacket;
 	bool genDone=false;
 	sf::Vector2f coinPos[10];

@@ -22,7 +22,7 @@ void Level::Init(Menu*menu_)
 	//std::cout << "Enter the ip address you wanna connect to: \n";
 	IP_ADDRESS = menu->IpTransmissionToLevel();
 	std::cout << IP_ADDRESS << std::endl;
-	client_ = std::make_unique<Client>(IP_ADDRESS, port, player_, enemy_, name,Tcp);
+	client_ = std::make_unique<Client>(IP_ADDRESS, port, player_, enemy_, name,Tcp,window);
 	
 	connected_succesfully = client_->getConnectedStatus();
 	if (connected_succesfully == true)
@@ -56,7 +56,7 @@ void Level::update(float dt, sf::Event* Ev)
 	if (connected_succesfully == true)
 	{
 		enemy_rendered = client_->renderEnemy();
-		client_->Update(input, Ev, window, &player_, &enemy_, dt);
+		client_->Update(input, Ev,  &player_, &enemy_, dt);
 		player_.Update();
 		if (enemy_rendered == true)
 		{
@@ -72,7 +72,7 @@ void Level::update(float dt, sf::Event* Ev)
 void Level::clientInput(sf::Event* Ev)
 {
 
-	client_->HandleInput(Ev, input, window,&player_);
+	client_->HandleInput(Ev, input, &player_);
 }
 
 // Render level
@@ -83,7 +83,7 @@ void Level::render()
 	
 	if (connected_succesfully == true)
 	{
-		client_->Render(window);
+		client_->Render();
 		player_.Render(window);
 		if (enemy_rendered == true)
 		{

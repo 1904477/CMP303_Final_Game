@@ -39,6 +39,9 @@ public:
 	sf::Text IpEnterDisplay;
 	sf::Text nameEnterOrder;
 	sf::Text nameEnterText;
+	sf::Text joinLobbyDisplay;
+
+	bool renderJoinGame=false;
 
 	std::string players;
 	std::string nameEnter;

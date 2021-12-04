@@ -21,6 +21,7 @@ void Menu::Init()
 	nameEnter = "";
 	Graphics.setup(window);
 	font.loadFromFile("font/arial.ttf");
+	renderJoinGame = false;
 	IPorName = "IP";
 	if (!font.loadFromFile("font/arial.ttf")) //SETS THE GAME NAME IN THE MENU SCREEN
 	{
@@ -51,6 +52,18 @@ void Menu::Init()
 	nameEnterOrder.setCharacterSize(20);
 	nameEnterOrder.setFillColor(sf::Color::White);
 	nameEnterOrder.setPosition(0.0f, window->getSize().y / 1.8);
+
+
+	if (!font.loadFromFile("font/arial.ttf")) //SETS THE GAME NAME IN THE MENU SCREEN
+	{
+		std::cout << "NO \n";
+	}
+	joinLobbyDisplay.setFont(font);
+	joinLobbyDisplay.setString("Type your name and press enter to join the lobby");
+	joinLobbyDisplay.setCharacterSize(20);
+	joinLobbyDisplay.setFillColor(sf::Color::White);
+	joinLobbyDisplay.setPosition(window->getSize().x / 3.3f, window->getSize().y / 1.2f);
+
 
 	IpEnterDisplay.setFillColor(sf::Color::White);
 	IpEnterDisplay.setFont(font);
@@ -128,6 +141,12 @@ void Menu::render()
 	window->draw(nameEnterText);
 	window->draw(nameEnterOrder);
 	
+	if (renderJoinGame == true)
+	{
+		Graphics.renderPlayButton(window);
+		window->draw(joinLobbyDisplay);
+	}
+	
 	endDraw();
 }
 
@@ -149,8 +168,6 @@ void Menu::Name_Sending_TCP()
 {
 
 	printf("Connection successful!\n\n");
-
-
 	sf::Packet name_sender;
 	int type = 1;
 	name_sender << type;
@@ -210,7 +227,7 @@ void Menu::IpEnterFunction(sf::Event* Event_)
 		std::cout << "Ip address is " << IpEnter<<"\n";
 		IpEnterDisplay.setFillColor(sf::Color::Green);
 		IPorName = "Name";
-
+		renderJoinGame = true;
 
 		
 	}

@@ -42,7 +42,7 @@ void server::TCPCommunicationHandler()
 	}
 	else
 	{
-		if (clients.size() < 3)
+		if (clients.size() < 2)
 		{
 			clients.push_back(socket);
 			selector.add(*socket);
@@ -79,7 +79,8 @@ void server::TCPMessageRecSend()
 			{
 				std::cout << "someone sent a message\n";
 				std::string text;
-				packet >>text;
+				int type = 0;
+				packet >>type>>text;
 				sendPacket <<  text;
 				for (int j = 0; j < clients.size(); j++)
 				{
@@ -89,16 +90,25 @@ void server::TCPMessageRecSend()
 					}
 				}
 			}
-			if (clients.size() == 2)
+	if (clients.size() == 2)
+	{
+		time1 = clock.getElapsedTime();
+		sf::Packet startGame;
+		int type = 5;
+		startGame << type;
+		if (time1.asSeconds() >= 0.5)
+		{
+			if (clients[i]->send(startGame) != sf::Socket::Done)
 			{
-				sf::Packet startGame;
-				int type = 5;
-				startGame << type;
-				if (clients[i]->send(startGame) != sf::Socket::Done)
-				{
-					std::cout << "failed to send startGame packet\n";
-				}
+				std::cout << "failed to send startGame packet\n";
 			}
+			else
+			{
+				std::cout << "sent startGame packet.\n";
+				clock.restart();
+			}
+		}
+	}
 	}
 
 }

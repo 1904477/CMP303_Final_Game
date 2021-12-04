@@ -1,25 +1,15 @@
 #include "Client.h"
 
-Client::Client(sf::IpAddress& ip, unsigned short& port, Player& p, Player& enemy, std::string& name_, sf::TcpSocket* sock)
+Client::Client(sf::IpAddress& ip, unsigned short& port, Player& p, Player& enemy, std::string& name_, sf::TcpSocket* sock,sf::RenderWindow *window)
 {
 	socket = sock;
 	render_enemy = false;
-	//udp_port = sf::UdpSocket::AnyPort;
 	server_address = ip;
-	//socket.setBlocking(true);
-	//sf::Socket::Status Tcp = socket->connect(ip, port);
-	//if (Tcp != sf::Socket::Done)
-	//{
-	//	printf("Client couldn't connect'\n");
-	//	printf("Server could be full, non existing or under maintenance\n");
-	//}
-	//else
-	//{
-
-		//Name_Sending_TCP(socket,name);
+	window_ = window;
 	ID_And_Positions_Getter();
 	Setup(&p, &enemy);
-	//std::cout << "IS IT CONNECTED " << connected_ << "\n";
+	name = name_;
+	std::cout << name_;
 }
 
 Client::~Client()
@@ -27,7 +17,7 @@ Client::~Client()
 	
 }
 
-void Client::HandleInput(sf::Event *Ev ,Input* input,sf::RenderWindow* window, Player* p)
+void Client::HandleInput(sf::Event *Ev ,Input* input, Player* p)
 {
 	
 		if (input->isKeyDown(sf::Keyboard::T) && open_chat == false)		//Chat opens 
@@ -99,7 +89,6 @@ void Client::TCPReceive()
 	sf::Packet startGame;
 	if (socket->receive(startGame) != sf::Socket::Done)
 	{
-		std::cout << "failed to receive startGame\n";
 	}		
 	else
 	{
@@ -107,9 +96,11 @@ void Client::TCPReceive()
 		startGame >> type;
 		if (type == 5)
 		{
-			canMove = true;
-			std::cout << "Game starts\n";
+				render_preStart = false;
+				renderStartTimer = true;
+				canMove = true;
 		}
+	
 	}
 
 }
@@ -218,7 +209,7 @@ void Client::textSetup(sf::RenderWindow* window)
 	drawText.setPosition(0, w_size.y - 100);
 }
 
-void Client::disconnect(Player* p,Input* input, sf::RenderWindow* window)
+void Client::disconnect(Player* p,Input* input)
 {
 	sf::Packet temp;
 	int type = 6;
@@ -239,7 +230,7 @@ void Client::disconnect(Player* p,Input* input, sf::RenderWindow* window)
 		else
 		{
 			std::cout << "Disconnected" << std::endl;
-			window->close();
+			window_->close();
 		}
 	}
 }
@@ -283,8 +274,21 @@ void Client::UDPReceive(Player* p, Player* enemy)
 
 void Client::Setup(Player* p, Player* enemy)
 {
-	udp_socket.setBlocking(false);
-	socket->setBlocking(false);
+	font.loadFromFile("font/arial.ttf");			//Initialisation of different texts.
+	waitForPlayers.setFont(font);
+	waitForPlayers.setString("Waiting for the other player\n");
+	waitForPlayers.setCharacterSize(30);
+	waitForPlayers.setFillColor(sf::Color::White);
+	waitForPlayers.setPosition(window_->getSize().x / 8, window_->getSize().y / 12);
+
+	timerStart.setFont(font);
+	timerStart.setCharacterSize(30);
+	timerStart.setFillColor(sf::Color::White);
+	timerStart.setPosition(window_->getSize().x / 8, window_->getSize().y / 12);
+	timerStart.setString("Game is started, you can move play!");
+
+	udp_socket.setBlocking(false);			//Udp set to non blocking. (it doesn't wait for an event to happen.)
+	socket->setBlocking(false);			//TCP set to non blocking.
 	open_chat = false;			//Know whether chat is open
 	connected_ = true;		//Know whether client is connected
 	chat_empty_on_open = false;			//Empties chat when t is pressed and the chat opens
@@ -292,6 +296,8 @@ void Client::Setup(Player* p, Player* enemy)
 	speed = 150;
 	p->setPosition(Player_Starting_posX, Player_Starting_posY);
 	enemy->setPosition(Enemy_Starting_posX, Enemy_Starting_posY);
+	
+
 }
 
 bool Client::getConnectedStatus()
@@ -304,7 +310,7 @@ bool Client::renderEnemy()
 	return render_enemy;
 }
 
-void Client::interpolateEnemyPos(Player* enemy,float dt)
+void Client::interpolateEnemyPos(Player* enemy,float dt)			//Interpolation of the position of the enemy in case of lag to avoid "teleport" of enemy sprite.
 {
 	sf::Vector2f next_pos=enemy_received;
 
@@ -318,47 +324,59 @@ void Client::interpolateEnemyPos(Player* enemy,float dt)
 }
 
 
-void Client::Update(Input* input,sf::Event* Ev, sf::RenderWindow* window, Player* p, Player* enemy,float dt)
+void Client::Update(Input* input,sf::Event* Ev, Player* p, Player* enemy,float dt)
 {
-	if (canMove == true)
+	TCPReceive();
+	if (canMove == true)			//The positions and movements are possible only when second player joins.
 	{
 		UDP_sendPosition(p, input, dt);
 	}
-
+	
 	interpolateEnemyPos(enemy,dt);
 	UDPReceive(p, enemy);
 	CheckCollision(p);
-	disconnect(p,input, window);
-	TCPReceive();
+	disconnect(p,input);
+	
 }
 
-void Client::Render(sf::RenderWindow* window)
+void Client::Render()
 {
-	textSetup(window);
-	Tools.renderCoin(window);
+	//Tools.renderGameElements(window, renderStartElements);
+	if (render_preStart == true)			//Rendered before the second player joins, 
+	{
+		window_->draw(waitForPlayers);
+	}
+	else if (renderStartTimer == true)		//Rendered after the second player joins, 
+	{
+		window_->draw(timerStart);
+	}
+	textSetup(window_);			//Sets up the chat positions.
+	Tools.renderCoin(window_);		//Render coins 
 }
 
-void Client::sendMessageTCP(Player* p)			//Sends a message, adding the ID in the packet
+void Client::sendMessageTCP(Player* p)			//Sends a message in TCP chat, adding the type, name and message.
 {
 	sf::Text displayText("You: "+userText, font, 20);
 	displayText.setFillColor(sf::Color::White);
 	chat.push_back(displayText);
 	sf::Packet packet;
-	packet  << name + ": " + userText;
-	if (socket->send(packet) != sf::Socket::Done)
+	int type = 3;
+	packet  << type << name + ": " + userText;
+	if (socket->send(packet) != sf::Socket::Done)		//Send message through TCP socket.
 	{
 		std::cout << "Error sending message. \n";
 	}
 	userText = "";			//Empties the chat after sending
 }
-void Client::UDP_sendPosition(Player* p, Input* input,float dt)
+
+void Client::UDP_sendPosition(Player* p, Input* input,float dt)		//THIS FUNCTION SENDS THE PLAYER'S ACTUAL POSITIONS TO THE SERVER THROUGH UDP
 {
-	sf::Time time1 = clock.getElapsedTime();
+	sf::Time time1 = clock.getElapsedTime();			//Timer to keep track of how often we send the positions
 	sf::Packet temp;
-	temp << 3;
+	temp << 3;		//Type of UDP packet is three
 	float posX = p->getPosition().x;
 	float posY = p->getPosition().y;
-	if (input->isKeyDown(sf::Keyboard::A))
+	if (input->isKeyDown(sf::Keyboard::A))		//MOVEMENTS-------------------
 	{
 		p->move(-speed*dt, 0);
 	}
@@ -374,10 +392,10 @@ void Client::UDP_sendPosition(Player* p, Input* input,float dt)
 	{
 		p->move(0, speed *dt);
 	}
-	if (time1.asSeconds() >= 0.5)
+	if (time1.asSeconds() >= 0.5)		//How often send the position of the player.
 	{
 		temp <<id_getter<< posX << posY;
-		if (udp_socket.send(temp, server_address, udp_port) != sf::Socket::Done)
+		if (udp_socket.send(temp, server_address, udp_port) != sf::Socket::Done)			//Send to the UDP socket.
 		{
 			printf("message can't be sent\n");
 		}
@@ -385,6 +403,6 @@ void Client::UDP_sendPosition(Player* p, Input* input,float dt)
 		{
 			
 		}
-		clock.restart();
+		clock.restart();			//Restart clock.
 	}
 }
