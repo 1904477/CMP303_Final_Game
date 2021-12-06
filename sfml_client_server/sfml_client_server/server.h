@@ -19,6 +19,9 @@ public:
 	void sendUDP(sf::Packet receivePosVar,int ID);
 	void startingPositions();
 	void IdAndPositionSetter(sf::TcpSocket* sock,std::string name_);
+	void coinPickedEvent(sf::Packet pack, int id);
+	void sendStartGame(sf::TcpSocket *sock);
+	void checkDisconnections(sf::TcpSocket* sock);
 	bool connected;
 	int tcp_port;
 	unsigned short udp_port;
@@ -42,9 +45,12 @@ protected:
 	float Starting_posY;
 	float Enemy_Starting_posX;
 	float Enemy_Starting_posY;
+	int scoreP1 = 0;
+	int scoreP2 = 0;
+	sf::Clock clock;	
+	sf::Clock discCheckClock;
 
-	sf::Clock clock;
-	sf::Time time1;
+	
 	sf::Packet coinPosPacket;
 	bool genDone=false;
 	sf::Vector2f coinPos[10];

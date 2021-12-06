@@ -70,6 +70,7 @@ void server::TCPCommunicationHandler()
 
 void server::TCPMessageRecSend()
 {
+
 	std::size_t dummy;
 	for (int i = 0; i < clients.size(); i++)
 	{
@@ -79,9 +80,9 @@ void server::TCPMessageRecSend()
 			{
 				std::cout << "someone sent a message\n";
 				std::string text;
-				int type = 0;
-				packet >>type>>text;
-				sendPacket <<  text;
+				packet >>text;
+				int type = 8;
+				sendPacket <<type<<  text;
 				for (int j = 0; j < clients.size(); j++)
 				{
 					if (i != j)
@@ -90,25 +91,8 @@ void server::TCPMessageRecSend()
 					}
 				}
 			}
-	if (clients.size() == 2)
-	{
-		time1 = clock.getElapsedTime();
-		sf::Packet startGame;
-		int type = 5;
-		startGame << type;
-		if (time1.asSeconds() >= 0.5)
-		{
-			if (clients[i]->send(startGame) != sf::Socket::Done)
-			{
-				std::cout << "failed to send startGame packet\n";
-			}
-			else
-			{
-				std::cout << "sent startGame packet.\n";
-				clock.restart();
-			}
-		}
-	}
+			sendStartGame(clients[i]);
+			checkDisconnections(clients[i]);
 	}
 
 }
@@ -164,26 +148,7 @@ void server::receiveUDP()
 		}
 		else if (type == 8)
 		{
-			int coinNum = 0;
-			int type = 9;
-			receivePos >> coinNum;
-			std::cout << id << " collected coin:" << coinNum << "\n";
-			sf::Packet coin_Picked;
-			coin_Picked << type;
-			coin_Picked << coinNum;
-			for (int i = 0; i < clientsUDP.size(); i++)
-			{
-				unsigned short port = clientsUDP[i].portUDP;
-				sf::IpAddress address = clientsUDP[i].ip;
-				if (UDP_socket.send(coin_Picked, address, port) != sf::Socket::Done)
-				{
-					printf("message can't be sent\n");
-				}
-				else
-				{
-					//std::cout << "Positions of players have been successfully sent \n";
-				}
-			}
+			coinPickedEvent(receivePos,id);
 		}
 	}
 }
@@ -200,7 +165,6 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 		//receivePosVar >> id_temp;
 		receivePosVar >> posX;
 		receivePosVar >> posY;
-		//std::cout <<ID<<  "Sent the position; " << "position gotten:\n " << posX << "  -  " << posY << "\n\n";
 		sf::Packet sendToClients;
 		sendToClients << type;
 		sendToClients << ID;
@@ -298,6 +262,74 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
 		}
 	}
 	
+}
+
+void server::coinPickedEvent(sf::Packet pack,int id)
+{
+	int coinNum = 0;
+	int type = 9;
+	pack >> coinNum;
+	std::cout << id << " collected coin:" << coinNum << "\n";
+	sf::Packet coin_Picked;
+	coin_Picked << type;
+	coin_Picked << id;
+	coin_Picked << coinNum;
+	for (int i = 0; i < clientsUDP.size(); i++)
+	{
+		unsigned short port = clientsUDP[i].portUDP;
+		sf::IpAddress address = clientsUDP[i].ip;
+		if (UDP_socket.send(coin_Picked, address, port) != sf::Socket::Done)
+		{
+			printf("message can't be sent\n");
+		}
+		else
+		{
+			//std::cout << "Positions of players have been successfully sent \n";
+		}
+	}
+}
+
+void server::sendStartGame(sf::TcpSocket* sock)
+{
+	sf::Time time1;
+	if (clients.size() == 2)
+	{
+		time1 = clock.getElapsedTime();
+		sf::Packet startGame;
+		int type = 5;
+		startGame << type;
+		if (time1.asSeconds() >= 0.1)
+		{
+			if (sock->send(startGame) != sf::Socket::Done)
+			{
+				std::cout << "failed to send startGame packet\n";
+			}
+			else
+			{
+				std::cout << "sent startGame packet.\n";
+				clock.restart();
+			}
+		}
+	}
+}
+
+void server::checkDisconnections(sf::TcpSocket* sock)			//Checks for disconnections every 3 seconds
+{
+	sf::Packet discCheck;
+	sf::Time discTime;
+	discTime = discCheckClock.getElapsedTime();
+	if (discTime.asSeconds() >= 3)
+	{
+		if (sock->send(discCheck) != sf::Socket::Done)
+		{
+			id_setter--;
+			std::cout << "ID: " << id_setter << " has disconnected. \n";
+			std::cout << id_setter << "  is now a free id.\n ";
+			clients.pop_back();
+			std::cout << "There are other : " << clients.size() << " people in the server \n";
+		}
+		discCheckClock.restart();
+	}
 }
 
 void server::BindUDP()

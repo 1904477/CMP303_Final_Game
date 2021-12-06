@@ -1,6 +1,8 @@
-﻿  server.cpp
+﻿  Source.cpp
+  server.cpp
 C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(22,25): warning C4390: ';': empty controlled statement found; is this the intent?
-C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(73,14): warning C4101: 'dummy': unreferenced local variable
-C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(127,14): warning C4101: 'received': unreferenced local variable
-C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(126,7): warning C4101: 'data': unreferenced local variable
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(74,14): warning C4101: 'dummy': unreferenced local variable
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(111,14): warning C4101: 'received': unreferenced local variable
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(110,7): warning C4101: 'data': unreferenced local variable
+  Generating Code...
   sfml_client_server.vcxproj -> C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\x64\Debug\sfml_client_server.exe
