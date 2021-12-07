@@ -42,7 +42,7 @@ void server::TCPCommunicationHandler()
 	}
 	else
 	{
-		if (clients.size() < 2)
+		if (clients.size() < 3)
 		{
 			clients.push_back(socket);
 			selector.add(*socket);
@@ -57,8 +57,8 @@ void server::TCPCommunicationHandler()
 					name_packet >> name;
 					std::cout << name << " has connected to the chat room. " << std::endl;
 				}
-					startingPositions();
-					IdAndPositionSetter(socket, name);
+				addPlayer();
+				IdAndPositionSetter(socket, name);
 			}
 
 			socket->setBlocking(false);
@@ -112,7 +112,7 @@ void server::receiveUDP()
 	// UDP socket:
 	sf::IpAddress sender;
 	sf::Packet receivePos;
-	udpClient incomingClient;
+	Player incomingClient;
 	unsigned short port;
 	while (UDP_socket.receive(receivePos, sender, port) == sf::Socket::Done)
 	{
@@ -122,16 +122,16 @@ void server::receiveUDP()
 		incomingClient.portUDP = port;
 		incomingClient.clientID = id;
 		bool match = false;
-		for (int i = 0; i < clientsUDP.size(); i++)
+		for (int i = 0; i < Players.size(); i++)
 		{
-			if (clientsUDP[i].clientID == incomingClient.clientID)
+			if (Players[i].clientID == incomingClient.clientID)
 			{
 				match = true;
 			}
 		}
 		if (!match)
 		{
-			clientsUDP.push_back(incomingClient);
+			Players.push_back(incomingClient);
 		}
 
 		if (type == 3)
@@ -156,7 +156,6 @@ void server::receiveUDP()
 
 void server::sendUDP(sf::Packet receivePosVar,int ID)
 {
-
 	int type = 7;
 		sf::Packet move;
 		//int id_temp;
@@ -173,10 +172,10 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 	/*	sendToClients << coinPos.x;
 		sendToClients << coinPos.y;*/
 
-		for (int i = 0; i < clientsUDP.size(); i++)
+		for (int i = 0; i < Players.size(); i++)
 		{
-			unsigned short port = clientsUDP[i].portUDP;
-			sf::IpAddress address = clientsUDP[i].ip;
+			unsigned short port = Players[i].portUDP;
+			sf::IpAddress address = Players[i].ip;
 			if (UDP_socket.send(sendToClients, address, port) != sf::Socket::Done)
 			{
 				printf("message can't be sent\n");
@@ -187,24 +186,6 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 			}
 		}
 			
-}
-void server::startingPositions()
-{
-	if (clients.size() == 1)
-	{
-		Starting_posX = 100;
-		Starting_posY = 200;
-		Enemy_Starting_posX = 1000;
-		Enemy_Starting_posY = 300;
-	}
-	else if (clients.size() == 2)
-	{
-		Starting_posX = 1000;
-		Starting_posY = 300;
-		Enemy_Starting_posX = 10;
-		Enemy_Starting_posY = 20;
-	}
-	
 }
 
 void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
@@ -221,10 +202,16 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
 			int type = 1;
 			Id_And_Pos_Setter << type;
 			Id_And_Pos_Setter << id_setter;
-			Id_And_Pos_Setter << Starting_posX;
-			Id_And_Pos_Setter << Starting_posY;
-			Id_And_Pos_Setter << Enemy_Starting_posX;
-			Id_And_Pos_Setter << Enemy_Starting_posY;
+
+
+			for (int i = 0; i < Players.size(); i++)
+			{
+				Players[i].startPos.x = static_cast <float> (rand() % 1000);
+				Players[i].startPos.y = static_cast <float> (rand() % 1000);
+				Id_And_Pos_Setter << Players[i].startPos.x << Players[i].startPos.y;
+			}
+
+
 			if (sock->send(Id_And_Pos_Setter) != sf::Socket::Done)
 			{
 				std::cout << "Error sending message. \n";
@@ -233,6 +220,7 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
 			{
 				std::cout << name_ << " is id: " << id_setter << "\n";
 				id_setter++;
+				std::cout << "Someone joined with id: " << id_setter << "\n";
 			}
 			int type1 = 2;
 			coinPosPacket << type1;
@@ -274,10 +262,10 @@ void server::coinPickedEvent(sf::Packet pack,int id)
 	coin_Picked << type;
 	coin_Picked << id;
 	coin_Picked << coinNum;
-	for (int i = 0; i < clientsUDP.size(); i++)
+	for (int i = 0; i < Players.size(); i++)
 	{
-		unsigned short port = clientsUDP[i].portUDP;
-		sf::IpAddress address = clientsUDP[i].ip;
+		unsigned short port = Players[i].portUDP;
+		sf::IpAddress address = Players[i].ip;
 		if (UDP_socket.send(coin_Picked, address, port) != sf::Socket::Done)
 		{
 			printf("message can't be sent\n");
@@ -330,6 +318,12 @@ void server::checkDisconnections(sf::TcpSocket* sock)			//Checks for disconnecti
 		}
 		discCheckClock.restart();
 	}
+}
+
+void server::addPlayer()
+{
+	Player inst;
+	Players.push_back(inst);
 }
 
 void server::BindUDP()

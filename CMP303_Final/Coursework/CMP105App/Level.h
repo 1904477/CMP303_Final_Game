@@ -20,6 +20,7 @@ public:
 	void Init( Menu* menu_);
 	bool get_connected() { return connected_succesfully; };
 private:
+
 	// Default functions for rendering to the screen.
 	void beginDraw();
 	void endDraw();
@@ -31,10 +32,10 @@ private:
 	AudioManager* audio;
 	//Client client_;
 	Player player_;
-	Player enemy_;
+	Player player2;
 
+	std::vector<Player>enemies;
 	bool connected_succesfully;
-
 	Menu* menu;
 	std::unique_ptr<Client> client_;
 

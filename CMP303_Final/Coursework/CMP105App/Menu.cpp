@@ -20,7 +20,7 @@ void Menu::Init()
 	IpEnter = "";
 	nameEnter = "";
 	Graphics.setup(window);
-	font.loadFromFile("font/arial.ttf");
+
 	renderJoinGame = false;
 	IPorName = "IP";
 	if (!font.loadFromFile("font/arial.ttf")) //SETS THE GAME NAME IN THE MENU SCREEN
@@ -223,7 +223,8 @@ void Menu::IpEnterFunction(sf::Event* Event_)
 {
 	if (Event_->key.code == sf::Keyboard::Return)		//Send message on enter
 	{
-		ipAdress_server = sf::IpAddress(IpEnter);
+		//ipAdress_server = sf::IpAddress(IpEnter);
+		ipAdress_server = sf::IpAddress::getLocalAddress();
 		std::cout << "Ip address is " << IpEnter<<"\n";
 		IpEnterDisplay.setFillColor(sf::Color::Green);
 		IPorName = "Name";

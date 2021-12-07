@@ -118,8 +118,8 @@ void GraphicsTools::inLevelElements(sf::RenderWindow* hwnd)
 
 void GraphicsTools::postGameElementsRender(sf::RenderWindow* hwnd,float scoreP1,float scoreP2)
 {
-	player1Score.setString("Your Score: "+std::to_string(scoreP1));
-	player2Score.setString("Player2 Score: " + std::to_string(scoreP2));
+	player1Score.setString("Your score: "+std::to_string((int)scoreP1));
+	player2Score.setString("Player2 Score: " + std::to_string((int)scoreP2));
 
 	hwnd->draw(player1Score);
 	hwnd->draw(player2Score);

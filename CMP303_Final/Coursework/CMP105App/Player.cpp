@@ -12,6 +12,7 @@ void Player::Init()
 	shape.setOutlineThickness(10);
 	shape.setOutlineColor(sf::Color(250, 150, 100));
 	setCollisionBox(0, 0, 40, 40);
+	shape.setPosition(Player_start_pos);
 }
 
 void Player::HandleInput(Input*input,float dt)

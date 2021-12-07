@@ -1,6 +1,6 @@
 #include "Client.h"
 
-Client::Client(sf::IpAddress& ip, unsigned short& port, Player& p, Player& enemy, std::string& name_, sf::TcpSocket* sock,sf::RenderWindow *window)
+Client::Client(sf::IpAddress& ip, unsigned short& port, Player& p, Player& player2, std::string& name_, sf::TcpSocket* sock,sf::RenderWindow *window)
 {
 	socket = sock;
 	render_enemy = false;
@@ -8,7 +8,7 @@ Client::Client(sf::IpAddress& ip, unsigned short& port, Player& p, Player& enemy
 	std::cout << Ip_serverAddress << "\n";
 	window_ = window;
 	ID_And_Positions_Getter();
-	Setup(&p, &enemy);
+	Setup(&p);
 	udp_port = 1111;
 	name = name_;
 	Tools.setup(window_);
@@ -73,6 +73,7 @@ void Client::ID_And_Positions_Getter()
 
 	coinPosGetter();
 }
+
 void Client::HandleInput(sf::Event *Ev ,Input* input, Player* p)
 {
 	
@@ -253,9 +254,7 @@ void Client::disconnect(Player* p,Input* input)
 
 void Client::UDPReceive(Player* p, Player* enemy)
 {
-
 	sf::IpAddress sender;
-//	std::cout << sender << "      " << server_address << "\n";
 	sf::Packet updated_pos;
 	int enemyID;
 	int type = 0;
@@ -270,7 +269,16 @@ void Client::UDPReceive(Player* p, Player* enemy)
 			updated_pos >> enemyID;
 			if (id_getter != enemyID)			//IF THE ID RECEIVED IS NOT THE MAIN PLAYER ONE, THEN UPDATE OTHER PLAYERS POSTIONS
 			{
-				updated_pos >> Player2.enemy_received.x >> Player2.enemy_received.y;
+				updated_pos >> Player2.next_pos.x >> Player2.next_pos.y;
+				m_Messages.push_back(Player2.next_pos);
+				sf::Vector2f next_pos = Player2.next_pos;
+				sf::Vector2f pos = enemy->getPosition();
+				sf::Vector2f dir = next_pos - pos;
+				float length = sqrt(dir.x * dir.x + dir.y * dir.y);
+				sf::Vector2f normalised_dir = dir / length;
+
+
+				enemy->setDirection(dir);
 				//	std::cout << enemyID << "Is at position positions: \n" << enemy_new_x << "-" << enemy_new_y << "\n";
 				render_enemy = true;		//Render enemy only if his positions are received.
 			}
@@ -295,10 +303,9 @@ void Client::UDPReceive(Player* p, Player* enemy)
 	}
 }
 
-void Client::Setup(Player* p, Player* enemy)
+void Client::Setup(Player* p)
 {
 	font.loadFromFile("font/arial.ttf");			//Initialisation of different texts.
-
 	udp_socket.setBlocking(false);			//Udp set to non blocking. (it doesn't wait for an event to happen.)
 	socket->setBlocking(false);			//TCP set to non blocking.
 	open_chat = false;			//Know whether chat is open
@@ -307,9 +314,6 @@ void Client::Setup(Player* p, Player* enemy)
 	is_chat_open = false;		//Variable to know whether chat is open
 	speed = 150;
 	p->setPosition(Player1.Player_start_pos.x, Player1.Player_start_pos.y);
-	enemy->setPosition(Player2.Player_start_pos.x, Player2.Player_start_pos.y);
-	
-
 }
 
 bool Client::getConnectedStatus()
@@ -349,17 +353,43 @@ void Client::coinPosGetter()
 
 void Client::interpolateEnemyPos(Player* enemy,float dt)			//Interpolation of the position of the enemy in case of lag to avoid "teleport" of enemy sprite.
 {
-	sf::Vector2f next_pos=Player2.enemy_received;
+	sf::Vector2f next_pos = Player2.next_pos;
 	sf::Vector2f pos = enemy->getPosition();
 	sf::Vector2f dir = next_pos - pos;
-	pos += dir * 40.0f * dt;
+	float length = sqrt(dir.x * dir.x + dir.y*dir.y);
+	if (length < 0.5f) 
+	{
+		Player2.next_pos += Player2.getDirection() * 1000.0f;
+	}
+	pos += dir * 20.0f * dt;
 	enemy->setPosition(pos);
+
+	//float predictedX = -1.0f;
+	//float predictedY = -1.0f;
+	//
+	//const f msize = m_Messages.size();
+	//if (msize < 3) {
+	//	return enemy->setPosition(enemy->next_pos.x, enemy->next_pos.y);
+	//}
+	//const sf::Vector2f msg0 = m_Messages[msize - 1];
+	//const sf::Vector2f msg1 = m_Messages[msize - 2];
+	//const sf::Vector2f msg2 = m_Messages[msize - 3];
+	//
+	//float speedX = msg1.x - msg2.x;
+	//float displacementX = speedX * dt;
+	//predictedX = msg0.x * displacementX;
+	//
+	//float speedY = msg1.y - msg2.y;
+	//float displacementY = speedY * dt;
+	//predictedY = msg0.y * displacementY;
+	//
+	//enemy->setPosition(predictedX, predictedY);
 }
 
 void Client::askSetup()
 {
 	int type;
-	sf::Packet setupAsk;
+	sf::Packet setupAsk;			
 	setupAsk << 19;
 	if (socket->send(setupAsk) != sf::Socket::Done)
 	{

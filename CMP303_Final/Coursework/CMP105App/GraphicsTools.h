@@ -16,14 +16,11 @@ public:
 	void preGameElementsRender(sf::RenderWindow* hwnd);
 	void inLevelElements(sf::RenderWindow* hwnd);
 	void postGameElementsRender(sf::RenderWindow* hwnd , float scoreP1, float scoreP2);
-
+	void MenuTextRender();
 	//void renderGameElements(sf::RenderWindow* hwnd,bool renderElementsStartGame);
 
 	std::vector<sf::RectangleShape>rectangles;
 	std::vector<sf::RectangleShape>renderPlay;
-
-
-
 	std::vector<sf::RectangleShape>InGameBox;
 	std::vector<sf::Text>PreGameText;
 	std::vector<sf::Text>PostGameText;

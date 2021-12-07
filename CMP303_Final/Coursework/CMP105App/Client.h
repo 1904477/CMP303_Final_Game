@@ -9,16 +9,17 @@
 #include "Player.h"
 #include "GraphicsTools.h"
 #include "Framework/Collision.h"
+#include <queue>
 class Client
 {
 public:
-	Client(sf::IpAddress& ip, unsigned short& port, Player& p,Player& enemy, std::string& name,sf::TcpSocket*sock,sf::RenderWindow*window);
+	Client(sf::IpAddress& ip, unsigned short& port, Player& p,Player& Player2, std::string& name,sf::TcpSocket*sock,sf::RenderWindow*window);
 	~Client();
 	void HandleInput(sf::Event* Ev,Input* input, Player* p);
-	void Update(Input* input,sf::Event * Ev, Player* p, Player* enemy, float dt);
+	void Update(Input* input,sf::Event * Ev, Player* p, Player* Player2, float dt);
 	void Render();
 	void disconnect(Player* p, Input* input);
-	void Setup(Player* p, Player* enemy);
+	void Setup(Player* p);
 
 	void sendMessageTCP(Player* p);
 	void TCPReceive();
@@ -26,8 +27,8 @@ public:
 	void textSetup(sf::RenderWindow* window);
 
 	void UDP_sendPosition(Player* p, Input* input, float dt);
-	void UDPReceive(Player* p, Player* enemy);
-	void interpolateEnemyPos(Player* enemy, float dt);
+	void UDPReceive(Player* p, Player* Player2);
+	void interpolateEnemyPos(Player* Player2, float dt);
 	void CheckCollision(Player* p);
 
 
@@ -56,6 +57,7 @@ protected:
 	sf::Clock clockGameStart;
 	sf::Time timeGameStart;
 	sf::RenderWindow* window_;
+	sf::Vector2f next_pos;
 
 	unsigned short udp_port;
 
@@ -63,6 +65,7 @@ protected:
 	bool connected_;
 
 	bool render_enemy;
+
 	bool open_chat;		//Bool for knowing if the chat is open
 	bool chat_empty_on_open;	//Bool for properly switch vars
 	bool is_chat_open;
@@ -71,14 +74,9 @@ protected:
 	bool canMove = false;
 
 	sf::Vector2f coinPos[10];
-	struct playerPos
-	{
-		sf::Vector2f Player_start_pos;
-		sf::Vector2f enemy_received = sf::Vector2f(0, 0);
-		int score;
-	};
-	playerPos Player1;
-	playerPos Player2;
-	float speed;
+	std::vector<sf::Vector2f>m_Messages;
+	Player Player1;
+	Player Player2;
 
+	float speed;
 };
