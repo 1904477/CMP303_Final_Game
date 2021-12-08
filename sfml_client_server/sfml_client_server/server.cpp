@@ -10,18 +10,18 @@ void server::Init()
 	selector.add(listener);
 	UDP_socket.setBlocking(false);
 
-	
 	BindUDP();
 }
 
 void server::Update()
 {
+
 	bool done = false;
 	while (!done)
 	{
-		if (connected == true);
 		TCP();
 		UDP();
+		sendTime();
 	}
 	
 }
@@ -169,8 +169,6 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 		sendToClients << ID;
 		sendToClients << posX;
 		sendToClients << posY;
-	/*	sendToClients << coinPos.x;
-		sendToClients << coinPos.y;*/
 
 		for (int i = 0; i < Players.size(); i++)
 		{
@@ -178,7 +176,7 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 			sf::IpAddress address = Players[i].ip;
 			if (UDP_socket.send(sendToClients, address, port) != sf::Socket::Done)
 			{
-				printf("message can't be sent\n");
+			//	printf("message can't be sent\n");
 			}
 			else
 			{
@@ -186,6 +184,8 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 			}
 		}
 			
+
+
 }
 
 void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
@@ -220,7 +220,6 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
 			{
 				std::cout << name_ << " is id: " << id_setter << "\n";
 				id_setter++;
-				std::cout << "Someone joined with id: " << id_setter << "\n";
 			}
 			int type1 = 2;
 			coinPosPacket << type1;
@@ -277,26 +276,33 @@ void server::coinPickedEvent(sf::Packet pack,int id)
 	}
 }
 
-void server::sendStartGame(sf::TcpSocket* sock)
+void server::sendStartGame(sf::TcpSocket* sock)			//Once two players join, the game starts.
 {
-	sf::Time time1;
-	if (clients.size() == 2)
+	
+	sf::Time time1;			//Time to avoid sending always the start game and creating a queue of messages
+	if (sendStartGameTo2 < 2)		//Start game packet will be sent only two times for the two  players.
 	{
-		time1 = clock.getElapsedTime();
-		sf::Packet startGame;
-		int type = 5;
-		startGame << type;
-		if (time1.asSeconds() >= 0.1)
+
+		if (clients.size() == 2)
 		{
-			if (sock->send(startGame) != sf::Socket::Done)
-			{
-				std::cout << "failed to send startGame packet\n";
-			}
-			else
-			{
-				std::cout << "sent startGame packet.\n";
-				clock.restart();
-			}
+			time1 = startGameClock.getElapsedTime();
+				sf::Packet startGame;			//Packet that holds start game confirmation
+				int type = 5;				//Type of start game packets
+				startGame << type;
+				if (time1.asSeconds() >= 0.2)			//Send the packet every 0.2 seconds
+				{
+					if (sock->send(startGame) != sf::Socket::Done)
+					{
+					}
+					else
+					{
+						gameClock.restart();			//If two players are in, restart game clock.
+						std::cout << gameClock.getElapsedTime().asSeconds();
+						gameStarted = true;
+						std::cout << "sent startGame packet.\n";
+						sendStartGameTo2++;		//sent one startGamePacket
+					}
+				}
 		}
 	}
 }
@@ -324,6 +330,37 @@ void server::addPlayer()
 {
 	Player inst;
 	Players.push_back(inst);
+}
+
+void server::sendTime()
+{
+	if (gameStarted&&clients.size()==2)
+	{
+		sf::Time gameSendTime = howOftenSendGameTime.getElapsedTime();
+		int typeGameClock = 2;
+		sf::Packet gameTimer;
+		dt += gameClock.restart().asSeconds();
+		std::cout << dt << "\n";
+		gameTimer << typeGameClock;
+		gameTimer << dt;
+		if (gameSendTime.asSeconds() >= 1)
+		{
+			for (int i = 0; i < Players.size(); i++)
+			{
+				unsigned short port = Players[i].portUDP;
+				sf::IpAddress address = Players[i].ip;
+				if (UDP_socket.send(gameTimer, address, port) != sf::Socket::Done)
+				{
+					//	printf("message can't be sent\n");
+				}
+				else
+				{
+					//std::cout << "Positions of players have been successfully sent \n";
+				}
+			}
+			howOftenSendGameTime.restart();
+		}
+	}
 }
 
 void server::BindUDP()

@@ -21,6 +21,7 @@ public:
 	void sendStartGame(sf::TcpSocket *sock);
 	void checkDisconnections(sf::TcpSocket* sock);
 	void addPlayer();
+	void sendTime();
 
 	bool connected;
 	int tcp_port;
@@ -42,9 +43,14 @@ protected:
 		int clientID;
 	};
 	std::vector<Player> Players;
-	sf::Clock clock;	
+	sf::Clock startGameClock;
+	sf::Clock gameClock;
 	sf::Clock discCheckClock;
-
+	sf::Clock howOftenSendGameTime;
+	bool gameStarted = false;
+	
+	int sendStartGameTo2 = 0;
+	float dt;
 	sf::Packet coinPosPacket;
 	bool genDone=false;
 	sf::Vector2f coinPos[10];

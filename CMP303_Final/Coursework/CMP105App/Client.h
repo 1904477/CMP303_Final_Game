@@ -30,7 +30,7 @@ public:
 	void UDPReceive(Player* p, Player* Player2);
 	void interpolateEnemyPos(Player* Player2, float dt);
 	void CheckCollision(Player* p);
-
+	void CoinPicked(sf::Packet pack, int enemyID);
 
 	void askSetup();
 	void coinPosGetter();
@@ -77,6 +77,6 @@ protected:
 	std::vector<sf::Vector2f>m_Messages;
 	Player Player1;
 	Player Player2;
-
+	float time;
 	float speed;
 };
