@@ -13,10 +13,10 @@
 class Client
 {
 public:
-	Client(sf::IpAddress& ip, unsigned short& port, Player& p,Player& Player2, std::string& name,sf::TcpSocket*sock,sf::RenderWindow*window);
+	Client(sf::IpAddress& ip, unsigned short& port, Player& p, std::string& name,sf::TcpSocket*sock,sf::RenderWindow*window);
 	~Client();
 	void HandleInput(sf::Event* Ev,Input* input, Player* p);
-	void Update(Input* input,sf::Event * Ev, Player* p, Player* Player2, float dt);
+	void Update(Input* input,sf::Event * Ev, Player* p, float dt);
 	void Render();
 	void disconnect(Player* p, Input* input);
 	void Setup(Player* p);
@@ -27,16 +27,22 @@ public:
 	void textSetup(sf::RenderWindow* window);
 
 	void UDP_sendPosition(Player* p, Input* input, float dt);
-	void UDPReceive(Player* p, Player* Player2);
-	void interpolateEnemyPos(Player* Player2, float dt);
+	void UDPReceive(Player* p);
+	void interpolateEnemyPos(Player* Player, float dt);
 	void CheckCollision(Player* p);
 	void CoinPicked(sf::Packet pack, int enemyID);
+
+	sf::Vector2f getClientPos(int idx) {
+		return enemies.at(idx).getPosition();
+	}
 
 	void askSetup();
 	void coinPosGetter();
 
 	bool getConnectedStatus();
-	bool renderEnemy();
+
+	Player getLastAddedP() { return enemies.back(); }
+	bool someoneJoined = false;
 
 protected:
 	std::string name;
@@ -64,7 +70,6 @@ protected:
 	int id_getter;
 	bool connected_;
 
-	bool render_enemy;
 
 	bool open_chat;		//Bool for knowing if the chat is open
 	bool chat_empty_on_open;	//Bool for properly switch vars
@@ -85,9 +90,9 @@ protected:
 	};
 
 	std::vector<sf::Vector2f>m_Messages;
-	std::vector<float>messages_times;
 	Player Player1;
-	Player Player2;
+	//Player Player2;
+	std::vector<Player>enemies;
 	float gameTime;
 	float speed;
 };

@@ -49,8 +49,7 @@ protected:
 	sf::Clock discCheckClock;
 	sf::Clock howOftenSendGameTime;
 	bool gameStarted = false;
-	
-	int sendStartGameTo2 = 0;
+
 	float gameTime;
 	sf::Packet coinPosPacket;
 	bool genDone=false;

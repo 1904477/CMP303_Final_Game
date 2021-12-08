@@ -20,13 +20,12 @@ void Level::Init(Menu*menu_)
 	name = menu->NameTransmissionToLevel();
 	//std::cout << "Enter the ip address you wanna connect to: \n";
 	IP_ADDRESS = menu->IpTransmissionToLevel();
-	client_ = std::make_unique<Client>(IP_ADDRESS, port, player_, player2, name, Tcp, window);
+	client_ = std::make_unique<Client>(IP_ADDRESS, port, player_, name, Tcp, window);
 	connected_succesfully = client_->getConnectedStatus();
 
 	if (connected_succesfully == true)
 	{
 		player_.Init();
-		player2.Init();
 	}
 
 	else if(connected_succesfully == false)
@@ -50,15 +49,18 @@ void Level::handleInput(float dt)
 void Level::update(float dt, sf::Event* Ev)
 {
 
+	if (client_->someoneJoined) {
+		client_->someoneJoined = false;
+		enemies.push_back(client_->getLastAddedP());
+	}
+
 	if (connected_succesfully == true)
 	{
-		enemy_rendered = client_->renderEnemy();
-		client_->Update(input, Ev, &player_, &player2,dt);
+		client_->Update(input, Ev, &player_,dt);
 		player_.Update();
-		if (enemy_rendered == true)
-		{
-			player2.Update();
-
+		for (int i = 0; i < enemies.size(); i++) {
+			enemies.at(i).setPosition(client_->getClientPos(i));
+			enemies.at(i).Update();
 		}
 	}
 }
@@ -74,15 +76,10 @@ void Level::render()
 	beginDraw();
 	
 	
-	if (connected_succesfully == true)
-	{
-		client_->Render();
-		player_.Render(window);
-		if (enemy_rendered == true)
-		{
-			player2.Render(window);
-
-		}
+	client_->Render();
+	player_.Render(window);
+	for (int i = 0; i < enemies.size(); i++) {
+		enemies.at(i).Render(window);
 	}
 	endDraw();
 }

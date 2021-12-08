@@ -32,7 +32,7 @@ private:
 	AudioManager* audio;
 	//Client client_;
 	Player player_;
-	Player player2;
+	//Player player2;
 
 	std::vector<Player>enemies;
 	bool connected_succesfully;
@@ -44,5 +44,4 @@ private:
 	std::string name;
 	sf::TcpSocket* Tcp;
 
-	bool enemy_rendered;
 };
