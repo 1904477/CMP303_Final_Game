@@ -9,7 +9,7 @@ void server::Init()
 	listener.setBlocking(false);
 	selector.add(listener);
 	UDP_socket.setBlocking(false);
-
+	
 	BindUDP();
 }
 
@@ -42,7 +42,7 @@ void server::TCPCommunicationHandler()
 	}
 	else
 	{
-		if (clients.size() < 3)
+		if (clients.size() < 2)
 		{
 			clients.push_back(socket);
 			selector.add(*socket);
@@ -141,10 +141,14 @@ void server::receiveUDP()
 		else if (type == 6)
 		{
 			id_setter--;
-			std::cout << "ID: " << id_setter << " has disconnected. \n";
-			std::cout << id_setter << "  is now a free id.\n ";
-			clients.pop_back();
-			std::cout << "There are other : " << clients.size() << " people in the server \n";
+		std::cout << "ID: " << id_setter << " has disconnected. \n";
+		std::cout << id_setter << "  is now a free id.\n ";
+		clients.pop_back();
+		bool gameStarted = false;
+		Players.pop_back();
+		sendStartGameTo2 = 0;
+		howOftenSendGameTime.restart();
+		std::cout << "There are other : " << clients.size() << " people in the server \n";
 		}
 		else if (type == 8)
 		{
@@ -167,6 +171,7 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 		sf::Packet sendToClients;
 		sendToClients << type;
 		sendToClients << ID;
+		sendToClients << gameTime;
 		sendToClients << posX;
 		sendToClients << posY;
 
@@ -278,7 +283,6 @@ void server::coinPickedEvent(sf::Packet pack,int id)
 
 void server::sendStartGame(sf::TcpSocket* sock)			//Once two players join, the game starts.
 {
-	
 	sf::Time time1;			//Time to avoid sending always the start game and creating a queue of messages
 	if (sendStartGameTo2 < 2)		//Start game packet will be sent only two times for the two  players.
 	{
@@ -320,6 +324,10 @@ void server::checkDisconnections(sf::TcpSocket* sock)			//Checks for disconnecti
 			std::cout << "ID: " << id_setter << " has disconnected. \n";
 			std::cout << id_setter << "  is now a free id.\n ";
 			clients.pop_back();
+			bool gameStarted = false;
+			sendStartGameTo2 = 0;
+			howOftenSendGameTime.restart();
+			Players.pop_back();
 			std::cout << "There are other : " << clients.size() << " people in the server \n";
 		}
 		discCheckClock.restart();
@@ -339,10 +347,10 @@ void server::sendTime()
 		sf::Time gameSendTime = howOftenSendGameTime.getElapsedTime();
 		int typeGameClock = 2;
 		sf::Packet gameTimer;
-		dt += gameClock.restart().asSeconds();
-		std::cout << dt << "\n";
+		gameTime += gameClock.restart().asSeconds();
+		std::cout << gameTime << "\n";
 		gameTimer << typeGameClock;
-		gameTimer << dt;
+		gameTimer << gameTime;
 		if (gameSendTime.asSeconds() >= 1)
 		{
 			for (int i = 0; i < Players.size(); i++)

@@ -25,8 +25,9 @@ void Client::Update(Input* input, sf::Event* Ev, Player* p, Player* enemy, float
 	if (canMove == true)			//The positions and movements are possible only when second player joins.
 		UDP_sendPosition(p, input, dt);
 
-	interpolateEnemyPos(enemy, dt);
 	UDPReceive(p, enemy);
+	interpolateEnemyPos(enemy, dt);
+
 	CheckCollision(p);
 	disconnect(p, input);
 }
@@ -40,7 +41,7 @@ void Client::Render()
 		Tools.preGameElementsRender(window_);		//Render coins 
 
 	else if (renderStartTimer == true)		//Rendered after the second player joins, 
-		Tools.postGameElementsRender(window_,Player1.score,Player2.score, time);
+		Tools.postGameElementsRender(window_,Player1.score,Player2.score, gameTime);
 
 	textSetup(window_);			//Sets up the chat positions.
 	Tools.renderCoin(window_);		//Render coins 
@@ -230,10 +231,10 @@ void Client::textSetup(sf::RenderWindow* window)
 void Client::disconnect(Player* p,Input* input)
 {
 	sf::Packet temp;
-	int type = 6;
+//	int type = sendDisconnection;
 	int id = id_getter;
 
-	temp << type;
+	temp << sendDisconnection;
 	temp << id;
 	if (input->isKeyDown(sf::Keyboard::Escape))
 	{
@@ -262,32 +263,27 @@ void Client::UDPReceive(Player* p, Player* enemy)
 	{
 		std::cout << sender << "\n";
 		updated_pos >> type;
-		if (type == 2)			//Updated game Time
+		if (type == gameTimeReceive)			//Updated game Time
 		{
-			updated_pos >> time;
+			updated_pos >> gameTime;
 			std::cout << time << "\n";
 		}
-		if (type == 7)		//RECEIVES UPDATED ENEMY POSITIONS
+		if (type == receiveEnemyPos)		//RECEIVES UPDATED ENEMY POSITIONS
 		{
 			updated_pos >> enemyID;
+
 			if (id_getter != enemyID)			//IF THE ID RECEIVED IS NOT THE MAIN PLAYER ONE, THEN UPDATE OTHER PLAYERS POSTIONS
 			{
+				float temp_time;
+				updated_pos >> temp_time;
+				std::cout << "Time that you received the position: " << temp_time << "\n";
 				updated_pos >> Player2.next_pos.x >> Player2.next_pos.y;		//Updated enemy position 
-
+				messages_times.push_back(temp_time);
 				m_Messages.push_back(Player2.next_pos);					//Message history for prediction.
-				sf::Vector2f next_pos = Player2.next_pos;
-				sf::Vector2f pos = enemy->getPosition();
-				sf::Vector2f dir = next_pos - pos;
-				float length = sqrt(dir.x * dir.x + dir.y * dir.y);
-				sf::Vector2f normalised_dir = dir / length;
-
-
-				enemy->setDirection(dir);			
-				//	std::cout << enemyID << "Is at position positions: \n" << enemy_new_x << "-" << enemy_new_y << "\n";
 				render_enemy = true;		//Render enemy only if his positions are received.
 			}
 		}
-		if (type == 9)				//SOMEONE PICKED A COIN
+		if (type == coinHasBeenPicked)				//SOMEONE PICKED A COIN
 		{
 			int coinNum;
 			updated_pos >> enemyID;
@@ -366,12 +362,16 @@ void Client::interpolateEnemyPos(Player* enemy,float dt)			//Interpolation of th
 		Player2.next_pos += Player2.getDirection() * 1000.0f;
 	}
 	pos += dir * 20.0f * dt;
-	enemy->setPosition(pos);
+	//enemy->setPosition(posllerp
 
 	//float predictedX = -1.0f;
 	//float predictedY = -1.0f;
-	//
-	//const f msize = m_Messages.size();
+	//float timeSinceLastMsg, timeBetPos;
+	//sf::Vector2f vel;
+	//sf::Vector2f displ_;
+	//sf::Vector2f distBetweenPos;
+
+	//const float msize = m_Messages.size();
 	//if (msize < 3) {
 	//	return enemy->setPosition(enemy->next_pos.x, enemy->next_pos.y);
 	//}
@@ -379,22 +379,37 @@ void Client::interpolateEnemyPos(Player* enemy,float dt)			//Interpolation of th
 	//const sf::Vector2f msg1 = m_Messages[msize - 2];
 	//const sf::Vector2f msg2 = m_Messages[msize - 3];
 	//
-	//float speedX = msg1.x - msg2.x;
-	//float displacementX = speedX * dt;
-	//predictedX = msg0.x * displacementX;
+	//const float timeSize = messages_times.size();
+	///*if (timeSize < 3) {
+	//	return gameTime;
+	//}*/
+	//const float time0 = messages_times[timeSize - 1];
+	//const float time1 = messages_times[timeSize - 2];
+	//const float time2 = messages_times[timeSize - 3];
 	//
-	//float speedY = msg1.y - msg2.y;
-	//float displacementY = speedY * dt;
-	//predictedY = msg0.y * displacementY;
+	//timeSinceLastMsg = gameTime - time0;
+	//timeBetPos = time0 - time1;
+	//distBetweenPos.x = msg0.x - msg1.x;
+	//distBetweenPos.y = msg0.y - msg1.y;
+
+	//vel.x = distBetweenPos.x / timeBetPos;
+	//vel.y = distBetweenPos.y / timeBetPos;
 	//
+	//displ_.x = vel.x * timeSinceLastMsg;
+	//displ_.y = vel.y * timeSinceLastMsg;
+
+	//predictedX = enemy->getPosition().x + displ_.x;
+	//predictedY = enemy->getPosition().y + displ_.y;
 	//enemy->setPosition(predictedX, predictedY);
+
+
 }
 
 void Client::askSetup()
 {
 	int type;
 	sf::Packet setupAsk;			
-	setupAsk << 19;
+	setupAsk << askForSetup;
 	if (socket->send(setupAsk) != sf::Socket::Done)
 	{
 		std::cout << "Error getting ID\n";
@@ -406,7 +421,7 @@ void Client::UDP_sendPosition(Player* p, Input* input,float dt)		//THIS FUNCTION
 {
 	sf::Time time1 = clock.getElapsedTime();			//Timer to keep track of how often we send the positions
 	sf::Packet temp;
-	temp << 3;		//Type of UDP packet is three
+	temp << sendPlayerPos;		//Type of UDP packet is three
 	float posX = p->getPosition().x;
 	float posY = p->getPosition().y;
 	if (open_chat == false)			//PLAYER CAN MOVE ONLY IF CHAT IS CLOSED.

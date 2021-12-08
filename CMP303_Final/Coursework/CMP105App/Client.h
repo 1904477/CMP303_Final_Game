@@ -74,9 +74,20 @@ protected:
 	bool canMove = false;
 
 	sf::Vector2f coinPos[10];
+	enum dataInfo
+	{
+		askForSetup = 19,
+		sendPlayerPos = 3,
+		gameTimeReceive = 2,
+		receiveEnemyPos = 7,
+		coinHasBeenPicked = 9,
+		sendDisconnection = 6
+	};
+
 	std::vector<sf::Vector2f>m_Messages;
+	std::vector<float>messages_times;
 	Player Player1;
 	Player Player2;
-	float time;
+	float gameTime;
 	float speed;
 };

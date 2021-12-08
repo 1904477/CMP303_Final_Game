@@ -43,6 +43,7 @@ protected:
 		int clientID;
 	};
 	std::vector<Player> Players;
+
 	sf::Clock startGameClock;
 	sf::Clock gameClock;
 	sf::Clock discCheckClock;
@@ -50,7 +51,7 @@ protected:
 	bool gameStarted = false;
 	
 	int sendStartGameTo2 = 0;
-	float dt;
+	float gameTime;
 	sf::Packet coinPosPacket;
 	bool genDone=false;
 	sf::Vector2f coinPos[10];
