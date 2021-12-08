@@ -41,12 +41,15 @@ void Client::Render()
 {
 	if(open_chat==true)
 	Tools.inLevelElements(window_);
-
+	std::cout << gameTime << "\n";
 	if (render_preStart == true)			//Rendered before the second player joins, 
 		Tools.preGameElementsRender(window_);		//Render coins 
 
-	//else if (renderStartTimer == true)		//Rendered after the second player joins, 
-		//Tools.postGameElementsRender(window_,Player1.score,Player2.score, gameTime);
+	if (someoneJoined == true)			//Rendered before the second player joins, 
+	{
+		Tools.postGameElementsRender(window_, gameTime);		//Render coins 
+		render_preStart = false;
+	}
 
 	textSetup(window_);			//Sets up the chat positions.
 	Tools.renderCoin(window_);		//Render coins 
@@ -198,10 +201,6 @@ void Client::CheckCollision(Player* p)
 	}
 }
 
-void Client::CoinPicked(sf::Packet pack,int enemyID)
-{
-
-}
 
 void Client::textSetup(sf::RenderWindow* window)
 {
@@ -284,7 +283,6 @@ void Client::UDPReceive(Player* p)
 				for (int i = 0; i < enemies.size(); i++) {
 					if (enemies.at(i).m_id == enemyID) {
 						updated_pos >> enemies.at(i).next_pos.x >> enemies.at(i).next_pos.y;		//Updated enemy position 
-						std::cout << "I received     message from "<< enemyID<< enemies.at(i).next_pos.x << "    "<<enemies.at(i).next_pos.y << "\n";
 						enemies.at(i).setPosition(enemies.at(i).next_pos.x, enemies.at(i).next_pos.y);
 						enemies.at(i).Update();
 						knowHim = true;
@@ -466,7 +464,7 @@ void Client::UDP_sendPosition(Player* p, Input* input,float dt)		//THIS FUNCTION
 		{
 			printf("message can't be sent\n");
 		}
-		else if(time1.asSeconds() >= 0.5)
+		else if(time1.asSeconds() >= 0.01)
 		{
 			
 		}

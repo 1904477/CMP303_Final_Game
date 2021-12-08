@@ -30,7 +30,6 @@ public:
 	void UDPReceive(Player* p);
 	void interpolateEnemyPos(Player* Player, float dt);
 	void CheckCollision(Player* p);
-	void CoinPicked(sf::Packet pack, int enemyID);
 
 	sf::Vector2f getClientPos(int idx) {
 		return enemies.at(idx).getPosition();

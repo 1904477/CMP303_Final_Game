@@ -56,22 +56,15 @@ void GraphicsTools::setup(sf::RenderWindow* hwnd)
 	InGameBox.back().setOutlineColor(sf::Color::Cyan);
 	InGameBox.back().setOutlineThickness(3);
 
-	player1Score.setFont(font);
-	player1Score.setCharacterSize(30);
-	player1Score.setFillColor(sf::Color::White);
-	player1Score.setPosition(hwnd->getSize().x / 1.2-50, hwnd->getSize().y / 12);
-	
-	player2Score.setFont(font);
-	player2Score.setCharacterSize(30);
-	player2Score.setFillColor(sf::Color::White);
-	player2Score.setPosition(hwnd->getSize().x / 1.2-50, hwnd->getSize().y / 12+50);
 
 
 
 	gameStartTimerText.setFont(font);
 	gameStartTimerText.setCharacterSize(30);
 	gameStartTimerText.setFillColor(sf::Color::Green);
-	gameStartTimerText.setPosition(hwnd->getSize().x / 1.5 , hwnd->getSize().y / 1.1);
+	gameStartTimerText.setPosition(hwnd->getSize().x / 1.2-20 , hwnd->getSize().y / 2);
+
+
 }
 
 void GraphicsTools::render(sf::RenderWindow* hwnd)
@@ -124,14 +117,11 @@ void GraphicsTools::inLevelElements(sf::RenderWindow* hwnd)
 	}
 }
 
-void GraphicsTools::postGameElementsRender(sf::RenderWindow* hwnd,float scoreP1,float scoreP2,float gameTime)
+void GraphicsTools::postGameElementsRender(sf::RenderWindow* hwnd,float gameTime)
 {
-	player1Score.setString("Your score: "+std::to_string((int)scoreP1));
-	player2Score.setString("Player2 Score: " + std::to_string((int)scoreP2));
-	gameStartTimerText.setString("Game time: " + std::to_string(gameTime));
+
+	gameStartTimerText.setString("Game time: "+std::to_string(gameTime));
 	
-	hwnd->draw(player1Score);
-	hwnd->draw(player2Score);
 	hwnd->draw(gameStartTimerText);
 	for (int i = 0; i < PostGameText.size(); i++)
 	{

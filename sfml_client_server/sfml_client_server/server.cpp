@@ -139,13 +139,13 @@ void server::receiveUDP()
 		}
 		else if (type == 6)
 		{
-			id_setter--;
+		id_setter--;
 		std::cout << "ID: " << id_setter << " has disconnected. \n";
 		std::cout << id_setter << "  is now a free id.\n ";
 		clients.pop_back();
 		bool gameStarted = false;
 		Players.pop_back();
-		howOftenSendGameTime.restart();
+		//howOftenSendGameTime.restart();
 		std::cout << "There are other : " << clients.size() << " people in the server \n";
 		}
 		else if (type == 8)
@@ -175,7 +175,8 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 
 		for (int i = 0; i < Players.size(); i++)
 		{
-			std::cout << "send " << i << std::endl;
+	//
+	//		std::cout << "send " << i << std::endl;
 			unsigned short port = Players[i].portUDP;
 			sf::IpAddress address = Players[i].ip;
 			if (UDP_socket.send(sendToClients, address, port) != sf::Socket::Done)
@@ -283,28 +284,26 @@ void server::coinPickedEvent(sf::Packet pack,int id)
 void server::sendStartGame(sf::TcpSocket* sock)			//Once two players join, the game starts.
 {
 	sf::Time time1;			//Time to avoid sending always the start game and creating a queue of messages
-	
-
-		if (clients.size() == 1)
+	if (clients.size() == 1)
+	{
+		time1 = startGameClock.getElapsedTime();
+		sf::Packet startGame;			//Packet that holds start game confirmation
+		int type = 5;				//Type of start game packets
+		startGame << type;
+		if (time1.asSeconds() >= 0.2)			//Send the packet every 0.2 seconds
 		{
-			time1 = startGameClock.getElapsedTime();
-				sf::Packet startGame;			//Packet that holds start game confirmation
-				int type = 5;				//Type of start game packets
-				startGame << type;
-				if (time1.asSeconds() >= 0.2)			//Send the packet every 0.2 seconds
-				{
-					if (sock->send(startGame) != sf::Socket::Done)
-					{
-					}
-					else
-					{
-						gameClock.restart();			//If two players are in, restart game clock.
-						std::cout << gameClock.getElapsedTime().asSeconds();
-						gameStarted = true;
-						std::cout << "sent startGame packet.\n";
-					}
-				}
+			if (sock->send(startGame) != sf::Socket::Done)
+			{
+			}
+			else
+			{
+				gameClock.restart();			//If two players are in, restart game clock.
+				std::cout << gameClock.getElapsedTime().asSeconds() << "\n";
+				gameStarted = true;
+				//	std::cout << "sent startGame packet.\n";
+			}
 		}
+	}
 }
 
 void server::checkDisconnections(sf::TcpSocket* sock)			//Checks for disconnections every 3 seconds
@@ -319,25 +318,17 @@ void server::checkDisconnections(sf::TcpSocket* sock)			//Checks for disconnecti
 			id_setter--;
 			std::cout << "ID: " << id_setter << " has disconnected. \n";
 			std::cout << id_setter << "  is now a free id.\n ";
-			clients.pop_back();
 			bool gameStarted = false;
 			howOftenSendGameTime.restart();
-			Players.pop_back();
 			std::cout << "There are other : " << clients.size() << " people in the server \n";
 		}
 		discCheckClock.restart();
 	}
 }
 
-void server::addPlayer()
-{
-	Player inst;
-	Players.push_back(inst);
-}
-
 void server::sendTime()
 {
-	if (gameStarted&&clients.size()==3)
+	if (gameStarted&&clients.size()==1)
 	{
 		sf::Time gameSendTime = howOftenSendGameTime.getElapsedTime();
 		int typeGameClock = 2;

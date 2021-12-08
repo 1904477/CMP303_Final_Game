@@ -20,7 +20,6 @@ public:
 	void coinPickedEvent(sf::Packet pack, int id);
 	void sendStartGame(sf::TcpSocket *sock);
 	void checkDisconnections(sf::TcpSocket* sock);
-	void addPlayer();
 	void sendTime();
 
 	bool connected;

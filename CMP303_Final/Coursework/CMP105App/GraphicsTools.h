@@ -15,7 +15,7 @@ public:
 	void renderPlayButton(sf::RenderWindow* hwnd);
 	void preGameElementsRender(sf::RenderWindow* hwnd);
 	void inLevelElements(sf::RenderWindow* hwnd);
-	void postGameElementsRender(sf::RenderWindow* hwnd , float scoreP1, float scoreP2,float gameTime);
+	void postGameElementsRender(sf::RenderWindow* hwnd ,float gameTime);
 	//void renderGameElements(sf::RenderWindow* hwnd,bool renderElementsStartGame);
 
 	std::vector<sf::RectangleShape>rectangles;
