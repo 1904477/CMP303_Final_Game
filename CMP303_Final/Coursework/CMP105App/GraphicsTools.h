@@ -30,8 +30,5 @@ public:
 
 	sf::Text gameStartTimerText;
 
-	sf::Text player1Score;
-	sf::Text player2Score;
-
 };
 

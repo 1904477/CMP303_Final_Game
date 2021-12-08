@@ -73,9 +73,9 @@ protected:
 	bool open_chat;		//Bool for knowing if the chat is open
 	bool chat_empty_on_open;	//Bool for properly switch vars
 	bool is_chat_open;
-	bool render_preStart = true;;
-	bool renderStartTimer = false;
+	bool render_preStart = true;
 	bool canMove = false;
+	bool renderGameStartedElements = false;
 
 	sf::Vector2f coinPos[10];
 	enum dataInfo

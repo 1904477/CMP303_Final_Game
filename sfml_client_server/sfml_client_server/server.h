@@ -50,6 +50,7 @@ protected:
 	bool gameStarted = false;
 
 	float gameTime;
+	bool gameStart = true;
 	sf::Packet coinPosPacket;
 	bool genDone=false;
 	sf::Vector2f coinPos[10];

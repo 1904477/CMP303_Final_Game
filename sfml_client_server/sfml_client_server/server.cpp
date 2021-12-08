@@ -90,7 +90,9 @@ void server::TCPMessageRecSend()
 					}
 				}
 			}
+
 			sendStartGame(clients[i]);
+
 			checkDisconnections(clients[i]);
 	}
 
@@ -188,9 +190,6 @@ void server::sendUDP(sf::Packet receivePosVar,int ID)
 				//std::cout << "Positions of players have been successfully sent \n";
 			}
 		}
-			
-
-
 }
 
 void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
@@ -284,7 +283,7 @@ void server::coinPickedEvent(sf::Packet pack,int id)
 void server::sendStartGame(sf::TcpSocket* sock)			//Once two players join, the game starts.
 {
 	sf::Time time1;			//Time to avoid sending always the start game and creating a queue of messages
-	if (clients.size() == 1)
+	if (clients.size() >= 1)
 	{
 		time1 = startGameClock.getElapsedTime();
 		sf::Packet startGame;			//Packet that holds start game confirmation
@@ -297,10 +296,8 @@ void server::sendStartGame(sf::TcpSocket* sock)			//Once two players join, the g
 			}
 			else
 			{
-				gameClock.restart();			//If two players are in, restart game clock.
-				std::cout << gameClock.getElapsedTime().asSeconds() << "\n";
+				
 				gameStarted = true;
-				//	std::cout << "sent startGame packet.\n";
 			}
 		}
 	}
@@ -320,16 +317,23 @@ void server::checkDisconnections(sf::TcpSocket* sock)			//Checks for disconnecti
 			std::cout << id_setter << "  is now a free id.\n ";
 			bool gameStarted = false;
 			howOftenSendGameTime.restart();
+			sock->disconnect();
 			std::cout << "There are other : " << clients.size() << " people in the server \n";
 		}
 		discCheckClock.restart();
 	}
 }
 
-void server::sendTime()
+void server::sendTime()		//SENDS TIME TO ALL CLIENTS, TIME WILL STARTS WHEN AT LEAST ONE PLAYER IS IN.
 {
-	if (gameStarted&&clients.size()==1)
+	
+	if (gameStarted&&clients.size()>=1)		//Game starts and timer starts when at least one player is in.
 	{
+		if (gameStart == true)
+		{
+			gameClock.restart();
+			gameStart = false;
+		}
 		sf::Time gameSendTime = howOftenSendGameTime.getElapsedTime();
 		int typeGameClock = 2;
 		sf::Packet gameTimer;

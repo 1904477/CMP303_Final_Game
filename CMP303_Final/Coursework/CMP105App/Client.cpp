@@ -39,13 +39,15 @@ void Client::Update(Input* input, sf::Event* Ev, Player* p, float dt)
 
 void Client::Render()
 {
-	if(open_chat==true)
+	if(open_chat ==true)
 	Tools.inLevelElements(window_);
+
 	std::cout << gameTime << "\n";
+
 	if (render_preStart == true)			//Rendered before the second player joins, 
 		Tools.preGameElementsRender(window_);		//Render coins 
 
-	if (someoneJoined == true)			//Rendered before the second player joins, 
+	if (renderGameStartedElements == true)			//Rendered before the second player joins, 
 	{
 		Tools.postGameElementsRender(window_, gameTime);		//Render coins 
 		render_preStart = false;
@@ -149,7 +151,7 @@ void Client::TCPReceive()
 		if (type == 5)
 		{
 				render_preStart = false;
-				renderStartTimer = true;
+				renderGameStartedElements = true;
 		}
 		if (type == 8)
 		{
