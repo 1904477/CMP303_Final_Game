@@ -32,9 +32,8 @@ private:
 	AudioManager* audio;
 	//Client client_;
 	Player player_;
-	//Player player2;
-
 	std::vector<Player>enemies;
+
 	bool connected_succesfully;
 	Menu* menu;
 	std::unique_ptr<Client> client_;

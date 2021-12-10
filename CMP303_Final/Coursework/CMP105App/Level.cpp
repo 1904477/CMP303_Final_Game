@@ -59,8 +59,10 @@ void Level::update(float dt, sf::Event* Ev)
 		client_->Update(input, Ev, &player_,dt);
 		player_.Update();
 		for (int i = 0; i < enemies.size(); i++) {
-			enemies.at(i).setPosition(client_->getClientPos(i));
+
 			enemies.at(i).Update();
+			enemies.at(i).setPosition(client_->getClientPos(i));
+		//	enemies.at(i).setPosition(client_->next_pos_pass_to_level);
 		}
 	}
 }

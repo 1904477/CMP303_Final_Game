@@ -22,6 +22,7 @@ public:
 	sf::Vector2f m_direction;
 	sf::Vector2f Player_start_pos;
 	sf::Vector2f next_pos = sf::Vector2f(0, 0);
+	float temp_time;
 	int score;
 	int m_id;
 	//bool arrived = false;

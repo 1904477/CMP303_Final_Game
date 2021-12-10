@@ -53,6 +53,6 @@ protected:
 	bool gameStart = true;
 	sf::Packet coinPosPacket;
 	bool genDone=false;
-	sf::Vector2f coinPos[10];
+	sf::Vector2f coinPos[30];
 };
 

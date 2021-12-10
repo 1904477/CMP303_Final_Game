@@ -93,7 +93,7 @@ void server::TCPMessageRecSend()
 
 			sendStartGame(clients[i]);
 
-			checkDisconnections(clients[i]);
+			//checkDisconnections(clients[i]);
 	}
 
 }
@@ -229,7 +229,7 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)
 			coinPosPacket << type1;
 			if (genDone == false)
 			{
-				for (int i = 0; i < 10; i++)
+				for (int i = 0; i < 30; i++)
 				{
 					float x = static_cast <float> (rand() % 1000);
 					float y = static_cast <float> (rand() % 1000);

@@ -76,7 +76,7 @@ void GraphicsTools::render(sf::RenderWindow* hwnd)
 	
 }
 
-void GraphicsTools::coinGenerator(sf::Vector2f coinPos_[10])
+void GraphicsTools::coinGenerator(sf::Vector2f coinPos_[30])
 {
 		Coin coin;
 		coin.setPosition(coinPos_->x,coinPos_->y);

@@ -28,7 +28,7 @@ void Menu::Init()
 		std::cout << "NO \n";
 	}
 	gameName.setFont(font);
-	gameName.setString("Game");
+	gameName.setString("Ball Collector");
 	gameName.setCharacterSize(50);
 	gameName.setFillColor(sf::Color::White);
 	gameName.setPosition(window->getSize().x / 2.5, window->getSize().y / 12);
@@ -190,7 +190,6 @@ void Menu::nameEnterFunction(sf::Event* Event_)
 		players += nameEnter;
 		connect_attempt = true;
 		IPorName == "";
-		std::cout << ipAdress_server;
 		
 		sf::Socket::Status Tcp_Stat = Tcp->connect(ipAdress_server, 53000);
 		if (Tcp_Stat != sf::Socket::Done)
@@ -223,9 +222,8 @@ void Menu::IpEnterFunction(sf::Event* Event_)
 {
 	if (Event_->key.code == sf::Keyboard::Return)		//Send message on enter
 	{
-		//ipAdress_server = sf::IpAddress(IpEnter);
-		ipAdress_server = sf::IpAddress::getLocalAddress();
-		std::cout << "Ip address is " << IpEnter<<"\n";
+		ipAdress_server = sf::IpAddress(IpEnter);
+		//ipAdress_server = sf::IpAddress::getLocalAddress();
 		IpEnterDisplay.setFillColor(sf::Color::Green);
 		IPorName = "Name";
 		renderJoinGame = true;

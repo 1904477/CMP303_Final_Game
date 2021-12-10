@@ -35,6 +35,7 @@ public:
 		return enemies.at(idx).getPosition();
 	}
 
+
 	void askSetup();
 	void coinPosGetter();
 
@@ -42,6 +43,7 @@ public:
 
 	Player getLastAddedP() { return enemies.back(); }
 	bool someoneJoined = false;
+	sf::Vector2f next_pos_pass_to_level;
 
 protected:
 	std::string name;
@@ -62,22 +64,22 @@ protected:
 	sf::Clock clockGameStart;
 	sf::Time timeGameStart;
 	sf::RenderWindow* window_;
-	sf::Vector2f next_pos;
+	//sf::Vector2f next_pos;
+	sf::Vector2f final_interp_pos;
 
 	unsigned short udp_port;
 
 	int id_getter;
 	bool connected_;
-
-
 	bool open_chat;		//Bool for knowing if the chat is open
 	bool chat_empty_on_open;	//Bool for properly switch vars
 	bool is_chat_open;
 	bool render_preStart = true;
 	bool canMove = false;
 	bool renderGameStartedElements = false;
+	float lerpAlpha;
 
-	sf::Vector2f coinPos[10];
+	sf::Vector2f coinPos[30];
 	enum dataInfo
 	{
 		askForSetup = 19,
