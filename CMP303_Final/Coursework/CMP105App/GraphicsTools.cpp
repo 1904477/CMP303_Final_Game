@@ -37,7 +37,7 @@ void GraphicsTools::setup(sf::RenderWindow* hwnd)
 	PostGameText.back().setCharacterSize(30);
 	PostGameText.back().setFillColor(sf::Color::White);
 	PostGameText.back().setPosition(hwnd->getSize().x / 8, hwnd->getSize().y / 12);
-	PostGameText.back().setString("Game is started, you can move play!");
+	PostGameText.back().setString("Game is started, you can now move and play!");
 
 
 

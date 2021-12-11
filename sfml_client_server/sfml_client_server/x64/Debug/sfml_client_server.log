@@ -1,5 +1,2 @@
-﻿  Source.cpp
-  server.cpp
-C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(71,14): warning C4101: 'dummy': unreferenced local variable
-  Generating Code...
+﻿  LINK : C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\x64\Debug\sfml_client_server.exe not found or not built by the last incremental link; performing full link
   sfml_client_server.vcxproj -> C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\x64\Debug\sfml_client_server.exe
