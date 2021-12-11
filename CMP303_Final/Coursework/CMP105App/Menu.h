@@ -53,4 +53,5 @@ public:
 
 	GraphicsTools Graphics;
 	std::string IPorName;
+
 };
