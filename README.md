@@ -16,4 +16,5 @@ A demo of the project
 
 Github link to access the repository : https://github.com/1904477/CMP303_Final_Game
 
-
+If you are having any problem installing SFML,
+you can read the tutorial from the official page here: https://www.sfml-dev.org/tutorials/2.5/start-vc.php
