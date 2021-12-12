@@ -402,7 +402,7 @@ void Client::UDP_sendPosition(Player* p, Input* input,float dt)		//THIS FUNCTION
 			p->move(0, speed * dt);
 		}
 	}
-	if (time1.asSeconds() >= 0.2)		//How often send the position of the player.
+	if (time1.asSeconds() >= 0.01)		//How often send the position of the player.
 	{
 		temp <<id_getter<< posX << posY;
 		if (udp_socket.send(temp, Ip_serverAddress, udp_port) != sf::Socket::Done)			//Send to the UDP socket.
