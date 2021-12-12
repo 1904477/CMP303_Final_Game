@@ -3,8 +3,8 @@
 void server::Init()
 {
 	std::cout << "The local server address is: \n" << sf::IpAddress::getLocalAddress()<<"\n";			//Local address for local connection and testing
-	std::cout << "The public server address is: \n" << sf::IpAddress::getPublicAddress() << "\n";		//Public address to test outside local connection
-	udp_port= 1111;			//UDP port hardcoded
+	std::cout << "The public server address is: \n" << sf::IpAddress::getPublicAddress() <<"\n";		//Public address to test outside local connection
+	udp_port= 54000;			//UDP port hardcoded
 	listener.listen(53000);			//TCP port hardcoded
 	listener.setBlocking(false);			//Listener doesn't block so that it doesn't stop events from happening 
 	selector.add(listener);			//Selector adds listener, necessary for multiple connections
@@ -50,7 +50,7 @@ void server::TCPCommunicationHandler()
 			{
 				int type =0;
 				name_packet >> type;
-				if (type == 1)			//Packet type is 1
+				if (type == namePacket)			//Packet type is 1
 				{
 					name_packet >> name;
 					std::cout << name << " has connected to the chat room. " << std::endl;			//display who connected
@@ -77,7 +77,7 @@ void server::TCPMessageRecSend()		//Handles all the TCP events
 				std::cout << "someone sent a message\n";			//Display to debug
 				std::string text;
 				packet >>text;			//Message is extracted
-				int type = 8;
+				int type = chatToClients;
 				sendPacket <<type<<  text;		//And put along a type in a packet
 				for (int j = 0; j < clients.size(); j++)
 				{
@@ -126,11 +126,11 @@ void server::receiveUDP()			//UDP received function.
 			Players.push_back(incomingClient);			//If there is not a match, add the the incoming client to the vector of known players.e
 		}
 
-		if (type == 3)		//if the type is positions, then send the position of the player to other players.
+		if (type == udpPosReceived)		//if the type is positions, then send the position of the player to other players.
 		{
 			sendUDP(receivePos, id);
 		}
-		else if (type == 6)			//If type is 6, that person is disconnected
+		else if (type == disconnect)			//If type is 6, that person is disconnected
 		{
 		id_setter--;			//Id_setter variable decreases to avoid creating gaps
 		std::cout << "ID: " << id_setter << " has disconnected. \n";
@@ -140,7 +140,7 @@ void server::receiveUDP()			//UDP received function.
 		Players.pop_back();		//Pop back a space in the vector of players, not ideal as can remove a player that shouldn't be removed.
 		std::cout << "There are other : " << clients.size() << " people in the server \n";
 		}
-		else if (type == 8)
+		else if (type == coinPicked)
 		{
 			coinPickedEvent(receivePos,id);			//If someone picked a coin.
 		}
@@ -150,7 +150,7 @@ void server::receiveUDP()			//UDP received function.
 
 void server::sendUDP(sf::Packet receivePosVar,int ID)			//Once you received positions, this is run
 {
-		int type = 7;	//Type of the packet for positions to be sent to other players.
+		int type = udpPosSent;	//Type of the packet for positions to be sent to other players.
 		sf::Packet move;
 		//int id_temp;
 		float posX;		//Temp float to store positions received.
@@ -190,10 +190,10 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)			//Cal
 	if (sock->receive(setupAsked) == sf::Socket::Done)		//when the setup is asked
 	{
 		setupAsked >> type;
-		if (type == 19)		//Send id
+		if (type == idAsked)		//Send id
 		{
 			sf::Packet Id_And_Pos_Setter;
-			int type = 1;
+			int type = idSet;
 			Id_And_Pos_Setter << type;
 			Id_And_Pos_Setter << id_setter;
 
@@ -216,7 +216,7 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)			//Cal
 				id_setter++;
 			}
 
-			int type1 = 2;
+			int type1 = coinGen;
 			coinPosPacket << type1;
 			if (genDone == false)		//If the generation has not happened, generate all the positions and put them in a packet.
 			{
@@ -249,7 +249,7 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)			//Cal
 void server::coinPickedEvent(sf::Packet pack,int id)		//Called when a coin is picked
 {
 	int coinNum = 0;
-	int type = 9;
+	int type = coinPickedsendToClients;
 	pack >> coinNum;		//Extract the coin that has been collected
 	std::cout << id << " collected coin:" << coinNum << "\n";		//Display who picked which coin
 	sf::Packet coin_Picked;		//
@@ -278,7 +278,7 @@ void server::sendStartGame(sf::TcpSocket* sock)			//Once two players join, the g
 	{
 		time1 = startGameClock.getElapsedTime();
 		sf::Packet startGame;			//Packet that holds start game confirmation
-		int type = 5;				//Type of start game packets
+		int type = sendStartGameType;				//Type of start game packets
 		startGame << type;
 		if (time1.asSeconds() >= 0.2)			//Send the packet every 0.2 seconds
 		{
@@ -326,10 +326,10 @@ void server::sendTime()		//SENDS TIME TO ALL CLIENTS, TIME WILL STARTS WHEN AT L
 			gameStart = false;
 		}
 		sf::Time gameSendTime = howOftenSendGameTime.getElapsedTime();	
-		int typeGameClock = 2;
+		int typeGameClock = sendTimeType;
 		sf::Packet gameTimer;
 		gameTime += gameClock.restart().asSeconds();
-		std::cout << gameTime << "\n";
+		//std::cout << gameTime << "\n";
 		gameTimer << typeGameClock;
 		gameTimer << gameTime;
 		if (gameSendTime.asSeconds() >= 1)			//Send this packet with the game time every second

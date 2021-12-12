@@ -8,7 +8,7 @@
 #include "Framework/GameObject.h"
 class Player : public GameObject
 {
-public:
+public:				//PLAYER CLASS AND VARIABLES, SOME NOT USED BUT CAN BE EASILY IMPLEMENTED.
 	Player();
 	void Init();
 	void Update();
@@ -18,11 +18,15 @@ public:
 	//int getID() { return m_id; }
 	void setDirection(sf::Vector2f direction) { m_direction = direction; }
 	sf::Vector2f getDirection() { return m_direction; }
-	sf::CircleShape shape;
+
+	sf::CircleShape shape;		//Players are circles for now, can be changed.
+
 	sf::Vector2f m_direction;
-	sf::Vector2f Player_start_pos;
-	sf::Vector2f next_pos = sf::Vector2f(0, 0);
-	float temp_time;
+	sf::Vector2f Player_start_pos;			//Determines the player starting positions
+
+	sf::Vector2f next_pos = sf::Vector2f(0, 0);		//Determines the player updated positions (will be updated in client.cpp)
+
+	float temp_time;				//Time at which received positions (updated in client.cpp);
 	int score;
 	int m_id;
 	//bool arrived = false;

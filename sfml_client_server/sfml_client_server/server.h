@@ -62,5 +62,21 @@ protected:
 	bool genDone=false;
 
 	sf::Vector2f coinPos[30];			//how many coins
+
+	enum types
+	{
+		namePacket = 1,
+		chatToClients = 8,
+		udpPosReceived = 3,
+		disconnect = 6,
+		coinPicked = 8,
+		udpPosSent = 7,
+		idAsked = 19,
+		idSet = 1,
+		coinGen = 2,
+		coinPickedsendToClients = 9,
+		sendStartGameType = 5,
+		sendTimeType = 2,
+	};
 };
 

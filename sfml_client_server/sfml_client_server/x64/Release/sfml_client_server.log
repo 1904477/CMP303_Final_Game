@@ -1,5 +1,8 @@
-﻿  Generating code
-  Previous IPDB not found, fall back to full compilation.
+﻿  Source.cpp
+  server.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(71,14): warning C4101: 'dummy': unreferenced local variable
+  Generating code
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
   All 199 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   sfml_client_server.vcxproj -> C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\x64\Release\sfml_client_server.exe

@@ -1,0 +1,34 @@
+﻿  Client.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Client.cpp(455,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Coin.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Coin.cpp(24,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Animation.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\Animation.cpp(83,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  AudioManager.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\AudioManager.cpp(91,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Collision.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\Collision.cpp(51,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  GameState.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\GameState.cpp(14,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Input.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\Input.cpp(81,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  MusicObject.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\MusicObject.cpp(17,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  GameObject.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\GameObject.cpp(53,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  SoundObject.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\SoundObject.cpp(22,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  TileMap.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\TileMap.cpp(59,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Vector.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Framework\Vector.cpp(22,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  GraphicsTools.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\GraphicsTools.cpp(131,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Level.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Level.cpp(99,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Main.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Main.cpp(127,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Menu.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Menu.cpp(252,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Player.cpp
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Player.cpp(32,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?

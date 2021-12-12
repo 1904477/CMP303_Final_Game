@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Framework/GameObject.h"
 #include "Coin.h"
-class GraphicsTools
+class GraphicsTools			//----------------------CLASS THAT HANDLES GRAPHICS OBJECTS 
 {
 
 public: 
@@ -18,6 +18,8 @@ public:
 	void postGameElementsRender(sf::RenderWindow* hwnd ,float gameTime);
 	//void renderGameElements(sf::RenderWindow* hwnd,bool renderElementsStartGame);
 
+
+	//----------------------different vectors and objects to display in pregame and ingame
 	std::vector<sf::RectangleShape>rectangles;
 	std::vector<sf::RectangleShape>renderPlay;
 	std::vector<sf::RectangleShape>InGameBox;

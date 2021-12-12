@@ -2,12 +2,12 @@
 
 Client::Client(sf::IpAddress& ip, unsigned short& port, Player& p, std::string& name_, sf::TcpSocket* sock,sf::RenderWindow *window)
 {
-	socket = sock;
+	socket = sock;		
 	Ip_serverAddress = ip;
 	window_ = window;
 	ID_And_Positions_Getter();
 	Setup(&p);
-	udp_port = 1111;
+	udp_port = 54000;		//UDP port 
 	name = name_;
 	canMove = true;
 	Tools.setup(window_);
@@ -54,7 +54,7 @@ void Client::Render()
 	Tools.renderCoin(window_);		//Render coins 
 }
 
-void Client::ID_And_Positions_Getter()
+void Client::ID_And_Positions_Getter()			//At connection to server, player gets its Id and starting position
 {
 
 	askSetup();
@@ -67,7 +67,7 @@ void Client::ID_And_Positions_Getter()
 	{
 		int type;
 		Id_Getter >> type;
-		if (type == 1)
+		if (type == IdReceived)
 		{
 			Id_Getter >> id_getter;
 			std::cout << "Your id is: " << id_getter << std::endl;
@@ -75,7 +75,7 @@ void Client::ID_And_Positions_Getter()
 		}
 	}
 
-	coinPosGetter();
+	coinPosGetter();		//Positions of coins are gotten and they'll be the same for every player.
 }
 
 void Client::HandleInput(sf::Event *Ev ,Input* input, Player* p)
@@ -135,19 +135,19 @@ void Client::HandleInput(sf::Event *Ev ,Input* input, Player* p)
 	}
 }
 
-void Client::TCPReceive()
+void Client::TCPReceive()			//TCP RECEIVE MAIN FUNC
 {
-	sf::Packet startGame;
-	while (socket->receive(startGame) == sf::Socket::Done)
+	sf::Packet startGame;			
+	while (socket->receive(startGame) == sf::Socket::Done)			//While you are receiving (while is necessary not to lose packets)
 	{
 		int type = 0;
 		startGame >> type;
-		if (type == 5)
+		if (type == startGameType)
 		{
 				render_preStart = false;
 				renderGameStartedElements = true;
 		}
-		if (type == 8)
+		if (type == chatReceived)
 		{
 			std::string temptext;			//Stored in a temporary text
 			if (startGame >> temptext)
@@ -174,7 +174,7 @@ void Client::sendMessageTCP(Player* p)			//Sends a message in TCP chat, adding t
 	userText = "";			//Empties the chat after sending
 }
 
-void Client::CheckCollision(Player* p)
+void Client::CheckCollision(Player* p)		//Check for collisions
 {
 	for (int i = 0; i < Tools.coins.size(); i++)
 	{
@@ -274,19 +274,19 @@ void Client::UDPReceive(Player* p)
 						updated_pos >> enemies.at(i).temp_time;			//TIME RECEIVED FROM PLAYERS POSITIONS
 						updated_pos >> enemies.at(i).next_pos.x >> enemies.at(i).next_pos.y;		//Updated enemy position for each enemy
 						//enemies.at(i).setPosition(enemies.at(i).next_pos.x, enemies.at(i).next_pos.y);		//SET POSITION TO NEW POSITION, CHANGE FOR INTERPOLATION
-						lerpAlpha = 0;
+						lerpAlpha = 0;			//Alpha is reset
 						enemies.at(i).Update();
 						knowHim = true;
 					}
 				}
-				if (!knowHim) {
-					Player temp;
-					temp.Init();
-					temp.m_id = enemyID;
+				if (!knowHim) {		//If the enemy is not known
+					Player temp;			//Create a temporary player
+					temp.Init();			//Initialise him
+					temp.m_id = enemyID;			//Set its id to the new one
 					sf::Vector2f rec_pos;
-					updated_pos >> rec_pos.x >> rec_pos.y;
+					updated_pos >> rec_pos.x >> rec_pos.y;			//Starting position of new player connected
 					temp.setPosition(rec_pos);
-					enemies.push_back(temp);
+					enemies.push_back(temp);			//Add him to enemy vector
 					someoneJoined = true;
 				}															//	m_Messages.push_back(Player2.next_pos);					//Message history for prediction.
 			}
@@ -326,7 +326,7 @@ bool Client::getConnectedStatus()
 	return connected_;
 }
 
-void Client::coinPosGetter()
+void Client::coinPosGetter()		//Coin function
 {
 	sf::Packet CoinposGetter;			//Starting positions of coins
 	if (socket->receive(CoinposGetter) != sf::Socket::Done)
@@ -338,9 +338,9 @@ void Client::coinPosGetter()
 		int type = 0;
 		CoinposGetter >> type;
 		std::cout << type;
-		if (type == 2)
+		if (type == coinPositions)
 		{
-			for (int i = 0; i < 30; i++)
+			for (int i = 0; i < 30; i++)			//Coin generation loop
 			{
 				CoinposGetter >> coinPos[i].x;
 				CoinposGetter >> coinPos[i].y;
@@ -351,21 +351,21 @@ void Client::coinPosGetter()
 	}
 }
 
-sf::Vector2f lerpButBetter(sf::Vector2f oldPos, sf::Vector2f newPos, float alpha)
+sf::Vector2f lerp(sf::Vector2f oldPos, sf::Vector2f newPos, float alpha)		//interpolation function
 {
 	return ((1 - alpha) * oldPos + alpha * newPos);
 
 }
 void Client::interpolateEnemyPos(Player* enemy,float dt)			//Interpolation of the position of the enemy in case of lag to avoid "teleport" of enemy sprite.
 {
-	lerpAlpha +=dt/(speed);
+	lerpAlpha +=dt/(speed);		//Alpha must be between 0 and 1, alpha is always reset once a new position is received
 	//std::cout << enemy->getPosition().x << "   " << enemy->getPosition().y << "NEWPOS: " << enemy->next_pos.x << "    " << enemy->next_pos.y << "\n";
-	enemy->setPosition(lerpButBetter(enemy->getPosition(), enemy->next_pos, lerpAlpha));
+	enemy->setPosition(lerp(enemy->getPosition(), enemy->next_pos, lerpAlpha));			//new position interpolated and set
 	
 
 }
 
-void Client::askSetup()
+void Client::askSetup()			//Setup is asked to server
 {
 	int type;
 	sf::Packet setupAsk;			
@@ -415,6 +415,7 @@ void Client::UDP_sendPosition(Player* p, Input* input,float dt)		//THIS FUNCTION
 		clock.restart();			//Restart clock.
 	}
 }
+//-------------------------------------	prediction is not necessary as players don't collide, can be implemented in the future.
 //float predictedX = -1.0f;
 	//float predictedY = -1.0f;
 	//float timeSinceLastMsg, timeBetPos;

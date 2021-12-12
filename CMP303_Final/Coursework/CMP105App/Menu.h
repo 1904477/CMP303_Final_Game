@@ -19,15 +19,10 @@ public:
 	void reset();
 	void nameEnterFunction(sf::Event* Event_);
 	void IpEnterFunction(sf::Event* Event_);
-
-
-
 	void Name_Sending_TCP();
-
 	sf::IpAddress IpTransmissionToLevel();
 	std::string NameTransmissionToLevel();
-
-
+private:			//----------------DIFFERENT TEXTS TO DISPLAY IN THE MENU
 	bool connect_attempt = false;
 	sf::RenderWindow* window;
 
@@ -54,4 +49,8 @@ public:
 	GraphicsTools Graphics;
 	std::string IPorName;
 
+	enum typeVariables
+	{
+		sendName = 1,
+	};
 };

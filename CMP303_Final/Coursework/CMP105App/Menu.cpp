@@ -3,7 +3,7 @@
 #include"Framework\GameObject.h"
 #include<iostream>
 
-Menu::Menu(sf::RenderWindow* hwnd, GameState* gs, Input* in, sf::TcpSocket* sock)
+Menu::Menu(sf::RenderWindow* hwnd, GameState* gs, Input* in, sf::TcpSocket* sock)		//Different pointers to main
 {
 	gameState = gs;
 	window = hwnd;
@@ -17,13 +17,13 @@ Menu::~Menu()
 
 void Menu::Init()
 {
-	IpEnter = "";
+	IpEnter = "";			//Once menu is initialised, every space for inputs is reset to empty
 	nameEnter = "";
 	Graphics.setup(window);
 
-	renderJoinGame = false;
+	renderJoinGame = false;			
 	IPorName = "IP";
-	if (!font.loadFromFile("font/arial.ttf")) //SETS THE GAME NAME IN THE MENU SCREEN
+	if (!font.loadFromFile("font/arial.ttf")) //SETS THE GAME NAME IN THE MENU SCREEN, after this, other texts initialised
 	{
 		std::cout << "NO \n";
 	}
@@ -33,7 +33,7 @@ void Menu::Init()
 	gameName.setFillColor(sf::Color::White);
 	gameName.setPosition(window->getSize().x / 2.5, window->getSize().y / 12);
 
-	if (!font.loadFromFile("font/arial.ttf")) //SETS THE GAME NAME IN THE MENU SCREEN
+	if (!font.loadFromFile("font/arial.ttf")) 
 	{
 		std::cout << "NO \n";
 	}
@@ -43,7 +43,7 @@ void Menu::Init()
 	IPaddressEnter.setFillColor(sf::Color::White);
 	IPaddressEnter.setPosition(0, window->getSize().y / 3);
 
-	if (!font.loadFromFile("font/arial.ttf")) //SETS THE GAME NAME IN THE MENU SCREEN
+	if (!font.loadFromFile("font/arial.ttf")) 
 	{
 		std::cout << "NO \n";
 	}
@@ -54,7 +54,7 @@ void Menu::Init()
 	nameEnterOrder.setPosition(0.0f, window->getSize().y / 1.8);
 
 
-	if (!font.loadFromFile("font/arial.ttf")) //SETS THE GAME NAME IN THE MENU SCREEN
+	if (!font.loadFromFile("font/arial.ttf")) 
 	{
 		std::cout << "NO \n";
 	}
@@ -103,45 +103,35 @@ void Menu::handleInput(sf::Event* Ev)
 			}
 		}
 	}
-	if (Ev->type == sf::Event::KeyPressed && IPorName == "IP")			//If a key is pressed
+	if (Ev->type == sf::Event::KeyPressed && IPorName == "IP")			//If you are entering the ip
 	{
 		IpEnterFunction(Ev);
 	}
 
-	else if (Ev->type == sf::Event::KeyPressed && IPorName == "Name")			//If a key is pressed
+	else if (Ev->type == sf::Event::KeyPressed && IPorName == "Name")			//If you are entering the name
 	{
 		nameEnterFunction(Ev);
 	}
-	if (input->isKeyDown(sf::Keyboard::Space)) //IF SPACE IS PRESSED IN MENU, CONTROLS STARTS
-	{
-		
-		input->setKeyUp(sf::Keyboard::Space);
-	}
-	IpEnterDisplay.setString(IpEnter);
-	nameEnterText.setString(nameEnter);
+	IpEnterDisplay.setString(IpEnter);			//The text is updated with the ipEnter variable
+	nameEnterText.setString(nameEnter);				//The text is updated with the nameEnter variable
 	
 }
 
 void Menu::update(float dt)
 {
-	//if (number_of_players == 1)
-	//{
-	//	gameState->setCurrentState(State::LEVEL);
-	//}
 }
 
 void Menu::render()
 {
-	beginDraw();
+	beginDraw();		//Render different elements of the menu
 	Graphics.render(window);
-
 	window->draw(gameName);
 	window->draw(IPaddressEnter);
 	window->draw(IpEnterDisplay);
 	window->draw(nameEnterText);
 	window->draw(nameEnterOrder);
 	
-	if (renderJoinGame == true)
+	if (renderJoinGame == true)			//Appears only once ip is entered
 	{
 		Graphics.renderPlayButton(window);
 		window->draw(joinLobbyDisplay);
@@ -164,12 +154,12 @@ void Menu::reset()
 {
 }
 
-void Menu::Name_Sending_TCP()
+void Menu::Name_Sending_TCP()		//If IP is entered, send name to server
 {
 
 	printf("Connection successful!\n\n");
 	sf::Packet name_sender;
-	int type = 1;
+	int type = sendName;
 	name_sender << type;
 	name_sender << nameEnter;
 	std::cout << nameEnter << std::endl;
@@ -181,7 +171,7 @@ void Menu::Name_Sending_TCP()
 
 }
 
-void Menu::nameEnterFunction(sf::Event* Event_)
+void Menu::nameEnterFunction(sf::Event* Event_)			//Enter the name
 {
 	if (Event_->key.code == sf::Keyboard::Return)		//Send message on enter
 	{
@@ -191,19 +181,22 @@ void Menu::nameEnterFunction(sf::Event* Event_)
 		connect_attempt = true;
 		IPorName == "";
 		
-		sf::Socket::Status Tcp_Stat = Tcp->connect(ipAdress_server, 53000);
+		sf::Socket::Status Tcp_Stat = Tcp->connect(ipAdress_server, 53000);			//Once name is entered, connect to IP and port
 		if (Tcp_Stat != sf::Socket::Done)
 		{
 			printf("Client couldn't connect'\n");
 			printf("Server could be full, non existing or under maintenance\n");
-			Init();
+			Init();			//If connection couldn't happen, restart menu
 		}
 		else
 		{
+					//If you managed to connect
+		}
+		{
 	
 			std::cout << "IS IT CONNECTED " << "\n";
-			Name_Sending_TCP();
-			gameState->setCurrentState(State::LEVEL);
+			Name_Sending_TCP();			//send name to server
+			gameState->setCurrentState(State::LEVEL);			//Enter in game and game is started.
 		}
 
 	}
@@ -226,9 +219,7 @@ void Menu::IpEnterFunction(sf::Event* Event_)
 		//ipAdress_server = sf::IpAddress::getLocalAddress();
 		IpEnterDisplay.setFillColor(sf::Color::Green);
 		IPorName = "Name";
-		renderJoinGame = true;
-
-		
+		renderJoinGame = true;		//Once IP is entered, enter name and render the button to join the game
 	}
 	else if (Event_->key.code == sf::Keyboard::BackSpace)		//Removes last letter in the message in the chat
 	{
