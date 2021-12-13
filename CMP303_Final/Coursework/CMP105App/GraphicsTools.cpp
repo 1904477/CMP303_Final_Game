@@ -1,6 +1,6 @@
 #include "GraphicsTools.h"
 
-void GraphicsTools::setup(sf::RenderWindow* hwnd)
+void GraphicsTools::setup(sf::RenderWindow* hwnd)				//GAME ELEMENTS(TEXT AND BOXES)
 {
 	font.loadFromFile("font/arial.ttf");
 

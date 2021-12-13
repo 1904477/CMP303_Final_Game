@@ -5,6 +5,7 @@
 #include <sstream>      // std::stringstream
 #include <iostream>
 #include <stdlib.h>
+#include <time.h>       /* time */
 #include "Framework/GameObject.h"
 class Player : public GameObject
 {

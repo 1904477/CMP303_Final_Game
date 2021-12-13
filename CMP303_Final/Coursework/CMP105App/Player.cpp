@@ -12,6 +12,7 @@ void Player::Init()
 	shape.setOutlineColor(sf::Color(colorGen()));
 	setCollisionBox(0, 0, 40, 40);			//Collision box size
 	shape.setPosition(Player_start_pos);
+	srand(time(NULL));
 }
 
 void Player::HandleInput(Input*input,float dt)
@@ -19,11 +20,11 @@ void Player::HandleInput(Input*input,float dt)
 
 }
 
-sf::Color Player::colorGen()
+sf::Color Player::colorGen()			//Seeded random enemy color 
 {
-	int R = static_cast <int> (rand() % 255);
-	int G = static_cast <int> (rand() % 255);
-	int B = static_cast <int> (rand() % 255);
+	int R =  (rand() % 255);
+	int G =  (rand() % 255);
+	int B =  (rand() % 255);
 	return sf::Color(R, G, B);
 }
 

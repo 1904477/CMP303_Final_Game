@@ -9,7 +9,7 @@ void server::Init()
 	listener.setBlocking(false);			//Listener doesn't block so that it doesn't stop events from happening 
 	selector.add(listener);			//Selector adds listener, necessary for multiple connections
 	UDP_socket.setBlocking(false);			//UDP socket set to not blocking, 
-	
+	srand(time(NULL));
 	BindUDP();			//Bind UDP to a port.
 }
 
@@ -200,8 +200,8 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)			//Cal
 
 			for (int i = 0; i < Players.size(); i++)			//Positions are created randomly
 			{
-				Players[i].startPos.x = static_cast <float> (rand() % 1000);
-				Players[i].startPos.y = static_cast <float> (rand() % 1000);
+				Players[i].startPos.x = static_cast <float> (rand() % 800);
+				Players[i].startPos.y = static_cast <float> (rand() % 800);
 				Id_And_Pos_Setter << Players[i].startPos.x << Players[i].startPos.y;		//And put in the packet.
 			}
 
@@ -222,8 +222,8 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)			//Cal
 			{
 				for (int i = 0; i < 30; i++)
 				{
-					float x = static_cast <float> (rand() % 1000);
-					float y = static_cast <float> (rand() % 1000);
+					float x = static_cast <float> (rand() % 800);
+					float y = static_cast <float> (rand() % 800);
 					coinPos[i].x = x;
 					coinPos[i].y = y;
 					coinPosPacket << coinPos[i].x;

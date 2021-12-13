@@ -63,7 +63,6 @@ protected:
 	sf::Clock clockGameStart;
 	sf::Time timeGameStart;
 	sf::RenderWindow* window_;
-	//sf::Vector2f next_pos;
 	sf::Vector2f final_interp_pos;
 
 	unsigned short udp_port;
