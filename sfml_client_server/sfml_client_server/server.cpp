@@ -201,7 +201,7 @@ void server::IdAndPositionSetter(sf::TcpSocket* sock, std::string name_)			//Cal
 			for (int i = 0; i < Players.size(); i++)			//Positions are created randomly
 			{
 				Players[i].startPos.x = static_cast <float> (rand() % 800);
-				Players[i].startPos.y = static_cast <float> (rand() % 800);
+				Players[i].startPos.y = static_cast <float> (rand() % 400);
 				Id_And_Pos_Setter << Players[i].startPos.x << Players[i].startPos.y;		//And put in the packet.
 			}
 
@@ -294,26 +294,26 @@ void server::sendStartGame(sf::TcpSocket* sock)			//Once two players join, the g
 	}
 }
 
-void server::checkDisconnections(sf::TcpSocket* sock)			//Checks for disconnections every 3 seconds, function need to be changed, temporary
-{
-	sf::Packet discCheck;
-	sf::Time discTime;
-	discTime = discCheckClock.getElapsedTime();
-	if (discTime.asSeconds() >= 3)
-	{
-		if (sock->send(discCheck) != sf::Socket::Done)
-		{
-			id_setter--;
-			std::cout << "ID: " << id_setter << " has disconnected. \n";
-			std::cout << id_setter << "  is now a free id.\n ";
-			bool gameStarted = false;
-			howOftenSendGameTime.restart();
-			sock->disconnect();
-			std::cout << "There are other : " << clients.size() << " people in the server \n";
-		}
-		discCheckClock.restart();
-	}
-}
+//void server::checkDisconnections(sf::TcpSocket* sock)			//Checks for disconnections every 3 seconds, function need to be changed, temporary
+//{
+//	sf::Packet discCheck;
+//	sf::Time discTime;
+//	discTime = discCheckClock.getElapsedTime();
+//	if (discTime.asSeconds() >= 3)
+//	{
+//		if (sock->send(discCheck) != sf::Socket::Done)
+//		{
+//			id_setter--;
+//			std::cout << "ID: " << id_setter << " has disconnected. \n";
+//			std::cout << id_setter << "  is now a free id.\n ";
+//			bool gameStarted = false;
+//			howOftenSendGameTime.restart();
+//			sock->disconnect();
+//			std::cout << "There are other : " << clients.size() << " people in the server \n";
+//		}
+//		discCheckClock.restart();
+//	}
+//}
 
 void server::sendTime()		//SENDS TIME TO ALL CLIENTS, TIME WILL STARTS WHEN AT LEAST ONE PLAYER IS IN.
 {

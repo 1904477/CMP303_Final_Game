@@ -1,4 +1,4 @@
 ﻿  server.cpp
-\\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(12,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-\\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(71,14): warning C4101: 'dummy': unreferenced local variable
-  sfml_client_server.vcxproj -> \\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\sfml_client_server\x64\Debug\sfml_client_server.exe
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(12,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\sfml_client_server\server.cpp(71,14): warning C4101: 'dummy': unreferenced local variable
+  sfml_client_server.vcxproj -> C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\sfml_client_server\x64\Debug\sfml_client_server.exe

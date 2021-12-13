@@ -21,7 +21,7 @@ public:
 	void receiveUDP();
 	void sendUDP(sf::Packet receivePosVar,int ID);
 	void coinPickedEvent(sf::Packet pack, int id);
-	void checkDisconnections(sf::TcpSocket* sock);
+//	void checkDisconnections(sf::TcpSocket* sock);
 	void sendTime();
 
 

@@ -1,4 +1,2 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (CMP105App.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Player.cpp
-\\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Player.cpp(15,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  CMP105App.vcxproj -> \\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\CMP303_Final\Coursework\x64\Debug\CMP303_Coursework.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (CMP105App.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  CMP105App.vcxproj -> C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\x64\Debug\CMP303_Coursework.exe
