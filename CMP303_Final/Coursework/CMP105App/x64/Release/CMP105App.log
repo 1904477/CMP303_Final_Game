@@ -1,20 +1,20 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (x64\Release\) contains files shared from another project (CMP105App.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (x64\Release\) contains files shared from another project (CMP105App.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Client.cpp
-C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Client.cpp(202,25): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+\\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Client.cpp(202,25): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Client.cpp(211,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Client.cpp(224,35): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+\\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Client.cpp(211,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+\\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Client.cpp(224,35): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Client.cpp(370,6): warning C4101: 'type': unreferenced local variable
+\\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\CMP303_Final\Coursework\CMP105App\Client.cpp(363,6): warning C4101: 'type': unreferenced local variable
   Generating code
-  2 of 535 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+  3 of 553 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    3 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  CMP105App.vcxproj -> C:\Users\aless\OneDrive\Desktop\Uni Work\Third Year\CMP303\Final_Exam_Project\CMP303_Final_Game\CMP303_Final\Coursework\x64\Release\CMP303_Coursework.exe
+  CMP105App.vcxproj -> \\StuHomeOdd\HomeDrive7$\1904477\Desktop\CMP303_Final_Game\CMP303_Final\Coursework\x64\Release\CMP303_Coursework.exe

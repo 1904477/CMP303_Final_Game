@@ -282,6 +282,7 @@ void Client::UDPReceive(Player* p)
 				if (!knowHim) {		//If the enemy is not known
 					Player temp;			//Create a temporary player
 					temp.Init();			//Initialise him
+					temp.setFillColor(sf::Color::Blue);
 					temp.m_id = enemyID;			//Set its id to the new one
 					sf::Vector2f rec_pos;
 					updated_pos >> rec_pos.x >> rec_pos.y;			//Starting position of new player connected
@@ -297,12 +298,7 @@ void Client::UDPReceive(Player* p)
 			updated_pos >> enemyID;
 			updated_pos >> coinNum;
 
-			if (id_getter != enemyID)			//If who picked a coin is not you, then increase enemy score.
-			{
-			}
-			else
-			{
-			}
+			Tools.pickedCoin(enemyID, coinNum);
 			Tools.coins[coinNum].setPicked(true);
 		}
 	}
@@ -358,12 +354,12 @@ sf::Vector2f lerp(sf::Vector2f oldPos, sf::Vector2f newPos, float alpha)		//inte
 }
 void Client::interpolateEnemyPos(Player* enemy,float dt)			//Interpolation of the position of the enemy in case of lag to avoid "teleport" of enemy sprite.
 {
-	lerpAlpha +=dt/(speed);		//Alpha must be between 0 and 1, alpha is always reset once a new position is received
+	lerpAlpha +=dt;		//Alpha must be between 0 and 1, alpha is always reset once a new position is received
 	//std::cout << enemy->getPosition().x << "   " << enemy->getPosition().y << "NEWPOS: " << enemy->next_pos.x << "    " << enemy->next_pos.y << "\n";
 	enemy->setPosition(lerp(enemy->getPosition(), enemy->next_pos, lerpAlpha));			//new position interpolated and set
-	
-
 }
+
+
 
 void Client::askSetup()			//Setup is asked to server
 {

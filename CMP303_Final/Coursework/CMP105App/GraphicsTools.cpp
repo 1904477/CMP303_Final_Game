@@ -39,9 +39,6 @@ void GraphicsTools::setup(sf::RenderWindow* hwnd)
 	PostGameText.back().setPosition(hwnd->getSize().x / 8, hwnd->getSize().y / 12);
 	PostGameText.back().setString("Game is started, you can now move and play!");
 
-
-
-
 	InGameBox.push_back(sf::RectangleShape());
 	InGameBox.back().setSize(sf::Vector2f(300, 150));
 	InGameBox.back().setPosition(0, hwnd->getSize().y / 1.4-30);
@@ -56,15 +53,15 @@ void GraphicsTools::setup(sf::RenderWindow* hwnd)
 	InGameBox.back().setOutlineColor(sf::Color::Cyan);
 	InGameBox.back().setOutlineThickness(3);
 
-
-
-
 	gameStartTimerText.setFont(font);
 	gameStartTimerText.setCharacterSize(30);
 	gameStartTimerText.setFillColor(sf::Color::Green);
 	gameStartTimerText.setPosition(hwnd->getSize().x / 1.2-20 , hwnd->getSize().y / 2);
 
-
+	coinHasBeenPicked.setFont(font);
+	coinHasBeenPicked.setCharacterSize(20);
+	coinHasBeenPicked.setFillColor(sf::Color::White);
+	coinHasBeenPicked.setPosition(hwnd->getSize().x / 1.2, hwnd->getSize().y / 5);
 }
 
 void GraphicsTools::render(sf::RenderWindow* hwnd)
@@ -122,9 +119,17 @@ void GraphicsTools::postGameElementsRender(sf::RenderWindow* hwnd,float gameTime
 
 	gameStartTimerText.setString("Game time: "+std::to_string(gameTime));
 	
+
 	hwnd->draw(gameStartTimerText);
+	
+	hwnd->draw(coinHasBeenPicked);
 	for (int i = 0; i < PostGameText.size(); i++)
 	{
 		hwnd->draw(PostGameText[i]);
 	}
+}
+
+void GraphicsTools::pickedCoin(int id, int coinNum)
+{
+	coinHasBeenPicked.setString(std::to_string(id) + " picked the coin: " + std::to_string(coinNum));
 }

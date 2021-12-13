@@ -332,7 +332,7 @@ void server::sendTime()		//SENDS TIME TO ALL CLIENTS, TIME WILL STARTS WHEN AT L
 		//std::cout << gameTime << "\n";
 		gameTimer << typeGameClock;
 		gameTimer << gameTime;
-		if (gameSendTime.asSeconds() >= 1)			//Send this packet with the game time every second
+		if (gameSendTime.asSeconds() >= 0.01)			//Send this packet with the game time every second
 		{
 			for (int i = 0; i < Players.size(); i++)
 			{

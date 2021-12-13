@@ -16,6 +16,7 @@ public:
 	void preGameElementsRender(sf::RenderWindow* hwnd);
 	void inLevelElements(sf::RenderWindow* hwnd);
 	void postGameElementsRender(sf::RenderWindow* hwnd ,float gameTime);
+	void pickedCoin(int id, int coinNum);
 	//void renderGameElements(sf::RenderWindow* hwnd,bool renderElementsStartGame);
 
 
@@ -29,7 +30,7 @@ public:
 	sf::Font font;
 	sf::Text gameTime;
 
-
+	sf::Text coinHasBeenPicked;
 	sf::Text gameStartTimerText;
 
 };

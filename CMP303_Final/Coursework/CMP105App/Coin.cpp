@@ -4,9 +4,9 @@ Coin::Coin()
 {
 	picked = false;
 	shape.setRadius(10);
-	shape.setFillColor(sf::Color(100, 250, 50));
+	shape.setFillColor(sf::Color::White);
 	shape.setOutlineThickness(5);
-	shape.setOutlineColor(sf::Color(250, 150, 100));
+	shape.setOutlineColor(sf::Color::Magenta);
 	setCollisionBox(0, 0, 20, 20);
 }
 

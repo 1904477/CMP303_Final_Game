@@ -18,7 +18,7 @@ public:				//PLAYER CLASS AND VARIABLES, SOME NOT USED BUT CAN BE EASILY IMPLEME
 	//int getID() { return m_id; }
 	void setDirection(sf::Vector2f direction) { m_direction = direction; }
 	sf::Vector2f getDirection() { return m_direction; }
-
+	sf::Color colorGen();
 	sf::CircleShape shape;		//Players are circles for now, can be changed.
 
 	sf::Vector2f m_direction;
