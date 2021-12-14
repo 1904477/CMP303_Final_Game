@@ -1,4 +1,4 @@
-# CMP303_Coursework
+# CMP303_Coursework Alessandro Loddo 1904477
 
 The application I developed is an example of how the connection between client and server works.
 In the .zip file you will find two different folders,one containing the ready-to-run executables
@@ -14,7 +14,9 @@ the "SFML2.5.1" folder to "SFML", now the project should compile.
 
 A demo of the project
 
-Github link to access the repository : https://github.com/1904477/CMP303_Final_Game
+Github link to access the repository :	 https://github.com/1904477/CMP303_Final_Game
 
 If you are having any problem installing SFML,
-you can read the tutorial from the official page here: https://www.sfml-dev.org/tutorials/2.5/start-vc.php
+you can read the tutorial from the official page here:	 https://www.sfml-dev.org/tutorials/2.5/start-vc.php
+
+Demo video:	https://web.microsoftstream.com/video/5e833803-4826-4d85-b0d2-ec5771360338

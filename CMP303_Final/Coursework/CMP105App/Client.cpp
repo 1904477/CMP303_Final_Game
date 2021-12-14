@@ -186,7 +186,7 @@ void Client::CheckCollision(Player* p)		//Check for collisions
 				sf::Packet coinPicked;
 				int type = 8;
 				coinPicked << type << id_getter << i;
-				if (udp_socket.send(coinPicked, Ip_serverAddress, udp_port) == sf::Socket::Done)
+				if (udp_socket.send(coinPicked, Ip_serverAddress, udp_port) == sf::Socket::Done)		//Check for collisions, if collision happens lets server know 
 				{
 					Tools.coins[i].setPicked(true);
 				}
@@ -224,7 +224,7 @@ void Client::textSetup(sf::RenderWindow* window)
 	drawText.setPosition(0, w_size.y - 100);
 }
 
-void Client::disconnect(Player* p,Input* input)
+void Client::disconnect(Player* p,Input* input)		//Disconnection function.
 {
 	sf::Packet temp;
 //	int type = sendDisconnection;
